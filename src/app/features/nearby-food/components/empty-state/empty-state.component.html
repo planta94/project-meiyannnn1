@@ -1,0 +1,9 @@
+<div class="empty-container">
+  <mat-icon *ngIf="!error">search_off</mat-icon>
+  <mat-icon *ngIf="error" color="warn">error_outline</mat-icon>
+
+  <p *ngIf="!error">No pandan food found nearby. Try adjusting filters.</p>
+  <p *ngIf="error" class="error-text">{{ error }}</p>
+
+  <button *ngIf="error" mat-stroked-button color="primary" (click)="retry.emit()">Retry</button>
+</div>

@@ -1,0 +1,43 @@
+<div class="filter-container">
+  <div class="row">
+    <mat-form-field appearance="outline">
+      <mat-label>Radius</mat-label>
+      <mat-select [(ngModel)]="radius" (selectionChange)="emitChanges()">
+        <mat-option [value]="500">500m</mat-option>
+        <mat-option [value]="1000">1km</mat-option>
+        <mat-option [value]="2000">2km</mat-option>
+        <mat-option [value]="5000">5km</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sort By</mat-label>
+      <mat-select [(ngModel)]="sort" (selectionChange)="emitChanges()">
+        <mat-option value="distance">Distance</mat-option>
+        <mat-option value="rating">Rating</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Min Rating</mat-label>
+        <mat-select [(ngModel)]="minRating" (selectionChange)="emitChanges()">
+          <mat-option [value]="0">Any</mat-option>
+          <mat-option [value]="3">3+ Stars</mat-option>
+          <mat-option [value]="4">4+ Stars</mat-option>
+          <mat-option [value]="4.5">4.5+ Stars</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+          <mat-label>Keyword Filter</mat-label>
+          <input matInput [(ngModel)]="keyword" (keyup)="emitChanges()" placeholder="e.g. cake">
+      </mat-form-field>
+
+      <mat-button-toggle-group [(ngModel)]="openNow" (change)="emitChanges()" aria-label="Open Status" class="open-toggle">
+        <mat-button-toggle [value]="false">All</mat-button-toggle>
+        <mat-button-toggle [value]="true">Open Now</mat-button-toggle>
+      </mat-button-toggle-group>
+  </div>
+</div>

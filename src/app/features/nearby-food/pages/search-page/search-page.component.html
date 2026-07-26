@@ -1,0 +1,41 @@
+<mat-toolbar color="primary" class="header">
+  <mat-icon>eco</mat-icon>
+  <span>Pandan Nearby Food</span>
+</mat-toolbar>
+
+<div class="content-container">
+
+  <div class="controls-section">
+    <app-filter-panel
+       (filterChange)="onFilterChange($event)">
+    </app-filter-panel>
+  </div>
+
+  <div class="main-content">
+    <div class="map-section">
+      <app-map
+        [currentLocation]="store.currentLocation()"
+        [places]="store.sortedPlaces()"
+        [selectedPlace]="store.selectedPlace()">
+      </app-map>
+    </div>
+
+    <div class="list-section">
+      <app-loading *ngIf="store.loading()"></app-loading>
+
+      <app-empty-state
+        *ngIf="!store.loading() && (store.error() || store.sortedPlaces().length === 0)"
+        [error]="store.error()"
+        (retry)="initLocationAndSearch()">
+      </app-empty-state>
+
+      <div class="places-list" *ngIf="!store.loading() && store.sortedPlaces().length > 0">
+         <app-food-card
+           *ngFor="let place of store.sortedPlaces()"
+           [place]="place"
+           (select)="onPlaceSelect($event)">
+         </app-food-card>
+      </div>
+    </div>
+  </div>
+</div>

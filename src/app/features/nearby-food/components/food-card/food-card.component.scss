@@ -1,0 +1,35 @@
+.food-card {
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+
+  mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.status {
+  margin-top: 8px;
+  font-weight: 500;
+
+  &.open {
+    color: #4caf50;
+  }
+
+  &.closed {
+    color: #f44336;
+  }
+}
