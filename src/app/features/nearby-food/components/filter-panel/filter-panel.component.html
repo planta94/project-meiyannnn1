@@ -55,7 +55,7 @@
     </mat-form-field>
 
     <div class="toggle-container">
-      <label class="toggle-label">Status</label>
+      <span class="toggle-label">Status</span>
       <mat-button-toggle-group [(ngModel)]="openNow" (change)="emitChanges()" aria-label="Open Status" class="pandan-toggle">
         <mat-button-toggle [value]="false">All Places</mat-button-toggle>
         <mat-button-toggle [value]="true">

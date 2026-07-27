@@ -1,16 +1,18 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .empty-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px;
+  padding: 24px 20px;
   text-align: center;
-  background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px dashed var(--glass-border);
-  box-shadow: var(--shadow-soft);
-  margin: 12px 0;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .icon-circle {
@@ -21,7 +23,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin: 0 auto 16px auto;
   box-shadow: 0 4px 14px rgba(39, 122, 98, 0.15);
 
   mat-icon {
@@ -44,7 +46,9 @@
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--pandan-dark);
-  margin: 0 0 8px 0;
+  margin: 0 auto 8px auto;
+  text-align: center;
+  width: 100%;
   font-family: 'Plus Jakarta Sans', sans-serif;
 
   &.error-title {
@@ -56,7 +60,8 @@
   font-size: 0.88rem;
   color: var(--text-sub);
   max-width: 400px;
-  margin: 0 0 20px 0;
+  margin: 0 auto 20px auto;
+  text-align: center;
   line-height: 1.5;
 
   &.error-text {
@@ -68,6 +73,10 @@
   background: var(--pandan-primary);
   color: #ffffff !important;
   border-radius: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
 
   mat-icon {
     font-size: 18px;

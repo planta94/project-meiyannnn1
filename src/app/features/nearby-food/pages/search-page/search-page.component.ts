@@ -4,12 +4,16 @@ import { MapComponent } from '../../components/map/map.component';
 import { FoodCardComponent } from '../../components/food-card/food-card.component';
 import { FilterPanelComponent } from '../../components/filter-panel/filter-panel.component';
 import { EmptyStateComponent } from '../../components/empty-state/empty-state.component';
+import { PandanBgComponent } from '../../components/pandan-bg/pandan-bg.component';
+import { LoginCardComponent } from '../../components/login-card/login-card.component';
 import { FoodStore } from '../../store/food.store';
 import { GeolocationService } from '../../../../core/services/geolocation.service';
 import { PlacesService } from '../../../../core/services/places.service';
 import { FoodFilterService } from '../../services/food-filter.service';
 import { CacheService } from '../../../../core/services/cache.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { Place } from '../../../../shared/models/place';
+import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
@@ -26,6 +30,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     FoodCardComponent,
     FilterPanelComponent,
     EmptyStateComponent,
+    PandanBgComponent,
+    LoginCardComponent,
+    MatButtonModule,
     MatToolbarModule,
     MatIconModule,
     MatSnackBarModule,
@@ -34,6 +41,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class SearchPageComponent implements OnInit {
   store = inject(FoodStore);
+  authService = inject(AuthService);
   private geoService = inject(GeolocationService);
   private placesService = inject(PlacesService);
   private filterService = inject(FoodFilterService);
@@ -47,7 +55,22 @@ export class SearchPageComponent implements OnInit {
     keyword: ''
   };
 
+  isModalDismissed = false;
+
+  dismissModal() {
+    this.isModalDismissed = true;
+  }
+
   async ngOnInit() {
+    if (!this.authService.isAuthenticated()) {
+      // Do not load Google Maps API until user is authenticated
+      return;
+    }
+
+    await this.startApp();
+  }
+
+  async startApp() {
     this.store.setLoading(true);
     try {
       await this.placesService.loadGoogleMaps();
@@ -59,7 +82,12 @@ export class SearchPageComponent implements OnInit {
     }
   }
 
+  onLoginSuccess() {
+    this.startApp();
+  }
+
   async initLocationAndSearch() {
+    this.isModalDismissed = false;
     this.store.setLoading(true);
     this.store.setError(null);
     try {
@@ -77,11 +105,14 @@ export class SearchPageComponent implements OnInit {
     const loc = this.store.currentLocation();
     if (!loc) return;
 
+    this.isModalDismissed = false;
+
     const radius = this.store.radius();
     this.store.setLoading(true);
     this.store.setError(null);
 
-    const searchKeywords = ['pandan', 'kuih', 'dessert', 'cake', 'onde onde'];
+    // Single targeted query to drastically reduce Google API calls & save budget
+    const searchKeywords = ['pandan food', 'kuih'];
     let allResults: any[] = [];
 
     try {
@@ -107,19 +138,65 @@ export class SearchPageComponent implements OnInit {
       const uniqueResults = this.filterService.removeDuplicates(allResults);
       const pandanPlaces = this.filterService.filterPandanPlaces(uniqueResults);
 
-      const mappedPlaces: Place[] = pandanPlaces.map((p: any) => ({
-        id: p.place_id,
-        name: p.name,
-        rating: p.rating,
-        userRatingsTotal: p.user_ratings_total,
-        address: p.vicinity,
-        location: { lat: p.geometry.location.lat(), lng: p.geometry.location.lng() },
-        openNow: p.opening_hours?.isOpen(),
-        distance: this.placesService.calculateDistance(loc.lat, loc.lng, p.geometry.location.lat(), p.geometry.location.lng()),
-        photos: p.photos ? p.photos.map((photo: any) => photo.getUrl({ maxWidth: 400 })) : []
-      }));
+      const mappedPlaces: Place[] = pandanPlaces.map((p: any) => {
+        const getLat = () => {
+          if (typeof p.lat === 'number') return p.lat;
+          if (typeof p.location?.lat === 'function') return p.location.lat();
+          if (typeof p.location?.lat === 'number') return p.location.lat;
+          if (typeof p.geometry?.location?.lat === 'function') return p.geometry.location.lat();
+          if (typeof p.geometry?.location?.lat === 'number') return p.geometry.location.lat;
+          return 0;
+        };
+        const getLng = () => {
+          if (typeof p.lng === 'number') return p.lng;
+          if (typeof p.location?.lng === 'function') return p.location.lng();
+          if (typeof p.location?.lng === 'number') return p.location.lng;
+          if (typeof p.geometry?.location?.lng === 'function') return p.geometry.location.lng();
+          if (typeof p.geometry?.location?.lng === 'number') return p.geometry.location.lng;
+          return 0;
+        };
+        const latVal = getLat();
+        const lngVal = getLng();
+        const dist = Math.round(this.placesService.calculateDistance(loc.lat, loc.lng, latVal, lngVal));
 
-      this.store.setPlaces(mappedPlaces);
+        let photosList: string[] = p.photoUrls || [];
+        if (photosList.length === 0 && p.photos && Array.isArray(p.photos)) {
+          photosList = p.photos.map((photo: any) => {
+            if (typeof photo === 'string') return photo;
+            if (typeof photo.getUrl === 'function') return photo.getUrl({ maxWidth: 400 });
+            if (typeof photo.getURI === 'function') return photo.getURI();
+            return photo.uri || '';
+          }).filter(Boolean);
+        }
+
+        let isOpenNow: boolean | undefined = p.openNow;
+        if (isOpenNow === undefined && p.opening_hours) {
+          if (typeof p.opening_hours.isOpen === 'function') {
+            try { isOpenNow = p.opening_hours.isOpen(); } catch (e) {
+              // ignore check failure
+            }
+          } else if (typeof p.opening_hours.open_now === 'boolean') {
+            isOpenNow = p.opening_hours.open_now;
+          }
+        }
+
+        return {
+          id: p.place_id || p.id || Math.random().toString(),
+          name: p.name || p.displayName || 'Pandan Food Spot',
+          rating: p.rating || 4.2,
+          userRatingsTotal: p.user_ratings_total || p.userRatingCount || 0,
+          address: p.vicinity || p.formatted_address || p.formattedAddress || 'Nearby',
+          location: { lat: latVal, lng: lngVal },
+          openNow: isOpenNow,
+          distance: dist,
+          photos: photosList
+        };
+      });
+
+      // Filter strictly within selected radius (e.g. 1000m = 1km)
+      const radiusFiltered = mappedPlaces.filter(p => (p.distance || 0) <= radius);
+
+      this.store.setPlaces(radiusFiltered);
       this.applyFilters();
 
     } catch (error: any) {

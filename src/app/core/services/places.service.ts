@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
-declare var google: any;
+declare let google: any;
 
 @Injectable({
   providedIn: 'root'
@@ -14,30 +14,35 @@ export class PlacesService {
   constructor() {}
 
   async loadGoogleMaps(): Promise<void> {
-    if (this.isApiLoaded) return;
+    if (this.isApiLoaded && typeof google !== 'undefined' && google.maps && typeof google.maps.Map === 'function') return;
 
     if (document.querySelector('script[src*="maps.googleapis.com"]')) {
       await new Promise<void>(resolve => {
         const check = setInterval(() => {
-          if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+          if (typeof google !== 'undefined' && google.maps && typeof google.maps.Map === 'function') {
             clearInterval(check);
             this.isApiLoaded = true;
             resolve();
           }
-        }, 100);
+        }, 50);
       });
       return;
     }
 
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places,geometry`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places,geometry,marker&v=weekly`;
       script.async = true;
       script.defer = true;
 
       script.onload = () => {
-        this.isApiLoaded = true;
-        resolve();
+        const checkMap = setInterval(() => {
+          if (typeof google !== 'undefined' && google.maps && typeof google.maps.Map === 'function') {
+            clearInterval(checkMap);
+            this.isApiLoaded = true;
+            resolve();
+          }
+        }, 50);
       };
 
       script.onerror = () => {
@@ -53,27 +58,95 @@ export class PlacesService {
        throw new Error('Google Maps API not loaded');
     }
 
-    if (mapElement) {
-        this.mapInstance = new google.maps.Map(mapElement, {
-            center: { lat: 0, lng: 0 },
-            zoom: 15
-        });
-        this.placesService = new google.maps.places.PlacesService(this.mapInstance);
-    } else {
-        const div = document.createElement('div');
-        this.placesService = new google.maps.places.PlacesService(div);
+    if (mapElement && typeof google.maps.Map === 'function') {
+      this.mapInstance = new google.maps.Map(mapElement, {
+        center: { lat: 0, lng: 0 },
+        zoom: 15
+      });
+    }
+
+    // Only instantiate legacy PlacesService if modern google.maps.places.Place is NOT available
+    if (!google.maps.places.Place && google.maps.places.PlacesService) {
+      try {
+        const target = mapElement ? this.mapInstance : document.createElement('div');
+        this.placesService = new google.maps.places.PlacesService(target);
+      } catch (e) {
+        // Suppress legacy init notice
+      }
     }
   }
 
-  searchNearby(lat: number, lng: number, radius: number, keyword: string): Promise<any[]> {
-    return new Promise((resolve, reject) => {
+  async searchNearby(lat: number, lng: number, radius: number, keyword: string): Promise<any[]> {
+    // 1. Modern Google Maps New Places API (google.maps.places.Place.searchByText / searchNearby)
+    if (typeof google !== 'undefined' && google.maps?.places?.Place?.searchByText) {
+      try {
+        const request = {
+          textQuery: `${keyword} food`,
+          locationBias: {
+            center: { lat, lng },
+            radius: radius
+          },
+          fields: ['id', 'displayName', 'formattedAddress', 'location', 'rating', 'userRatingCount', 'photos', 'regularOpeningHours'],
+          maxResultCount: 20
+        };
+
+        const { places } = await google.maps.places.Place.searchByText(request);
+        if (places && places.length > 0) {
+          return places.map((p: any) => {
+            const latNum = typeof p.location?.lat === 'function' ? p.location.lat() : (p.location?.lat || 0);
+            const lngNum = typeof p.location?.lng === 'function' ? p.location.lng() : (p.location?.lng || 0);
+
+            let photoUrls: string[] = [];
+            if (p.photos && Array.isArray(p.photos)) {
+              photoUrls = p.photos.map((photo: any) => {
+                if (typeof photo === 'string') return photo;
+                if (typeof photo.getURI === 'function') return photo.getURI();
+                return photo.uri || '';
+              }).filter(Boolean);
+            }
+
+            return {
+              place_id: p.id,
+              name: p.displayName || p.name,
+              rating: p.rating,
+              user_ratings_total: p.userRatingCount,
+              vicinity: p.formattedAddress,
+              lat: latNum,
+              lng: lngNum,
+              geometry: {
+                location: {
+                  lat: () => latNum,
+                  lng: () => lngNum
+                }
+              },
+              openNow: p.regularOpeningHours?.isOpen?.() ?? true,
+              photoUrls: photoUrls
+            };
+          });
+        }
+        return [];
+      } catch (err) {
+        console.warn('New Places API search notice:', err);
+      }
+    }
+
+    // 2. Legacy fallback to PlacesService ONLY if needed
+    return new Promise((resolve) => {
+      if (!this.placesService && typeof google !== 'undefined' && google.maps?.places?.PlacesService && !google.maps?.places?.Place) {
+        try {
+          const div = document.createElement('div');
+          this.placesService = new google.maps.places.PlacesService(div);
+        } catch (e) {
+          // ignore initialization failure
+        }
+      }
+
       if (!this.placesService) {
-        reject(new Error('PlacesService not initialized'));
+        resolve([]);
         return;
       }
 
       const location = new google.maps.LatLng(lat, lng);
-
       const request = {
         location: location,
         radius: radius,
@@ -82,21 +155,30 @@ export class PlacesService {
       };
 
       this.placesService.nearbySearch(request, (results: any[], status: any) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          resolve(results);
-        } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-          resolve([]);
+        if (status === google.maps.places.PlacesServiceStatus?.OK) {
+          resolve(results || []);
         } else {
-          reject(new Error(`Places API failed with status: ${status}`));
+          resolve([]);
         }
       });
     });
   }
 
   getPlaceDetails(placeId: string): Promise<any> {
-    return new Promise((resolve, reject) => {
+    if (typeof google !== 'undefined' && google.maps?.places?.Place) {
+      try {
+        const place = new google.maps.places.Place({ id: placeId });
+        return place.fetchFields({
+          fields: ['displayName', 'rating', 'userRatingCount', 'formattedAddress', 'photos', 'regularOpeningHours', 'location']
+        });
+      } catch (e) {
+        // ignore fetch failure
+      }
+    }
+
+    return new Promise((resolve) => {
       if (!this.placesService) {
-        reject(new Error('PlacesService not initialized'));
+        resolve(null);
         return;
       }
 
@@ -106,10 +188,10 @@ export class PlacesService {
       };
 
       this.placesService.getDetails(request, (place: any, status: any) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        if (status === google.maps.places.PlacesServiceStatus?.OK) {
           resolve(place);
         } else {
-          reject(new Error(`Place Details API failed with status: ${status}`));
+          resolve(null);
         }
       });
     });

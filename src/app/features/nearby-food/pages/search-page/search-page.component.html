@@ -1,23 +1,31 @@
+<app-pandan-bg></app-pandan-bg>
+
+<app-login-card *ngIf="!authService.isAuthenticated()" (loginSuccess)="onLoginSuccess()"></app-login-card>
+
 <header class="header">
   <div class="header-content">
     <div class="brand">
       <div class="logo-badge">
-        <mat-icon class="leaf-icon">eco</mat-icon>
+        <img src="cute-pandan.svg" alt="Cute Pandan" class="pandan-brand-icon" />
       </div>
       <div class="brand-text">
         <h1>斑兰Yan</h1>
-        <p class="tagline">Discover fragrant kuih, cakes & local Pandan treats</p>
+        <p class="tagline">Your destination for fragrant pandan treats & local favorites.</p>
       </div>
-    </div>
-
-    <div class="header-stats" *ngIf="!store.loading() && store.sortedPlaces().length > 0">
-      <span class="stat-badge">
-        <mat-icon>restaurant</mat-icon>
-        {{ store.sortedPlaces().length }} Places Found
-      </span>
     </div>
   </div>
 </header>
+
+<!-- Modal Popup Overlay for Errors & No Results -->
+<div class="modal-backdrop" *ngIf="!store.loading() && !isModalDismissed && (store.error() || store.sortedPlaces().length === 0)" (click)="dismissModal()" (keyup.escape)="dismissModal()" tabindex="0" role="dialog">
+  <div class="modal-card" (click)="$event.stopPropagation()" (keyup.escape)="$event.stopPropagation()" tabindex="0">
+    <button mat-icon-button type="button" class="modal-close-btn" (click)="dismissModal()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+    <app-empty-state [error]="store.error()" (retry)="initLocationAndSearch()">
+    </app-empty-state>
+  </div>
+</div>
 
 <main class="content-container">
   <section class="controls-section">
@@ -39,24 +47,16 @@
 
       <div class="map-container-relative">
         <app-map [currentLocation]="store.currentLocation()" [places]="store.sortedPlaces()"
-          [selectedPlace]="store.selectedPlace()">
+          [selectedPlace]="store.selectedPlace()" [radius]="store.radius()" (select)="onPlaceSelect($event)">
         </app-map>
-      </div>
-    </div>
 
-    <div class="list-section">
-      <div class="section-label" *ngIf="!store.loading() && store.sortedPlaces().length > 0">
-        <mat-icon>format_list_bulleted</mat-icon>
-        <span>Pandan Eateries</span>
-      </div>
-
-      <app-empty-state *ngIf="!store.loading() && (store.error() || store.sortedPlaces().length === 0)"
-        [error]="store.error()" (retry)="initLocationAndSearch()">
-      </app-empty-state>
-
-      <div class="places-list" *ngIf="!store.loading() && store.sortedPlaces().length > 0">
-        <app-food-card *ngFor="let place of store.sortedPlaces()" [place]="place" (select)="onPlaceSelect($event)">
-        </app-food-card>
+        <!-- Selected Place Floating Card Overlay (Appears on marker click) -->
+        <div class="selected-card-overlay" *ngIf="store.selectedPlace()">
+          <button mat-icon-button type="button" class="close-card-btn" (click)="store.setSelectedPlace(null)" aria-label="Close details">
+            <mat-icon>close</mat-icon>
+          </button>
+          <app-food-card [place]="store.selectedPlace()!"></app-food-card>
+        </div>
       </div>
     </div>
   </section>

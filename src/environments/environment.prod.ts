@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  googleMapsApiKey: 'PLACEHOLDER_API_KEY' // TODO: Replace with actual key
+  googleMapsApiKey: 'API_KEY',
+  appUsername: 'pandan',
+  appPassword: 'pandanyan2026'
 };

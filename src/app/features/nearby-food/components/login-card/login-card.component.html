@@ -1,0 +1,36 @@
+<div class="login-overlay">
+  <div class="login-card-box">
+    <div class="header-brand-badge">
+      <img src="cute-pandan.svg" alt="Cute Pandan" class="brand-avatar" />
+    </div>
+
+    <h2 class="login-title">Access Protected</h2>
+    <p class="login-desc">Enter credentials to unlock <strong>斑兰Yan</strong> nearby food finder.</p>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <mat-form-field appearance="outline" class="custom-field">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="username" name="username" placeholder="pandan" required autocomplete="username" />
+        <mat-icon matPrefix class="field-icon">person</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-field">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+        <mat-icon matPrefix class="field-icon">lock</mat-icon>
+        <button mat-icon-button type="button" matSuffix (click)="hidePassword = !hidePassword" aria-label="Toggle password visibility">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <div class="error-notice" *ngIf="errorMessage">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <button mat-flat-button class="unlock-btn" type="submit">
+        <mat-icon>key</mat-icon> Unlock App
+      </button>
+    </form>
+  </div>
+</div>
