@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  googleMapsApiKey: 'API_KEY',
-  appUsername: 'pandan',
-  appPassword: 'pandanyan2026'
+  googleMapsApiKey: 'AIzaSyAK0-vCQx9YaCI40D-HavYK2zAAeeKyXEI',
+  appUsername: 'meiyannnn1',
+  appPassword: '88888888'
 };

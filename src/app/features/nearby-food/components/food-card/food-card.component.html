@@ -2,7 +2,7 @@
   <div class="card-hero" *ngIf="place.photos && place.photos.length > 0; else defaultHero">
     <img [src]="place.photos[0]" [alt]="place.name" class="card-img" />
     <div class="hero-overlay"></div>
-    <div class="hero-chip distance-chip" *ngIf="place.distance !== null">
+    <div class="hero-chip distance-chip" *ngIf="place.distance !== undefined && place.distance !== null">
       <mat-icon>near_me</mat-icon>
       {{ place.distance < 1000 ? (place.distance | number:'1.0-0') + 'm' : (place.distance / 1000 | number:'1.1-1') + 'km' }}
     </div>
@@ -12,7 +12,7 @@
     <div class="card-hero placeholder-hero">
       <div class="hero-pattern"></div>
       <mat-icon class="placeholder-icon">bakery_dining</mat-icon>
-      <div class="hero-chip distance-chip" *ngIf="place.distance !== null">
+      <div class="hero-chip distance-chip" *ngIf="place.distance !== undefined && place.distance !== null">
         <mat-icon>near_me</mat-icon>
         {{ place.distance < 1000 ? (place.distance | number:'1.0-0') + 'm' : (place.distance / 1000 | number:'1.1-1') + 'km' }}
       </div>
