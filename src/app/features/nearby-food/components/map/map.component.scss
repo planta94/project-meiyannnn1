@@ -1,7 +1,21 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .map-wrapper {
   width: 100%;
   height: 100%;
-  min-height: 300px;
-  border-radius: 8px;
-  background-color: #f0f0f0;
+  min-height: 340px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  background-color: #e8f3ee;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: var(--shadow-hover);
+  }
 }

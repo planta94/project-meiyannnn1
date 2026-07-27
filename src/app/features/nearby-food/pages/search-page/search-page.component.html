@@ -1,41 +1,63 @@
-<mat-toolbar color="primary" class="header">
-  <mat-icon>eco</mat-icon>
-  <span>Pandan Nearby Food</span>
-</mat-toolbar>
+<header class="header">
+  <div class="header-content">
+    <div class="brand">
+      <div class="logo-badge">
+        <mat-icon class="leaf-icon">eco</mat-icon>
+      </div>
+      <div class="brand-text">
+        <h1>斑兰Yan</h1>
+        <p class="tagline">Discover fragrant kuih, cakes & local Pandan treats</p>
+      </div>
+    </div>
 
-<div class="content-container">
-
-  <div class="controls-section">
-    <app-filter-panel
-       (filterChange)="onFilterChange($event)">
-    </app-filter-panel>
+    <div class="header-stats" *ngIf="!store.loading() && store.sortedPlaces().length > 0">
+      <span class="stat-badge">
+        <mat-icon>restaurant</mat-icon>
+        {{ store.sortedPlaces().length }} Places Found
+      </span>
+    </div>
   </div>
+</header>
 
-  <div class="main-content">
+<main class="content-container">
+  <section class="controls-section">
+    <app-filter-panel (filterChange)="onFilterChange($event)"></app-filter-panel>
+  </section>
+
+  <section class="main-content">
     <div class="map-section">
-      <app-map
-        [currentLocation]="store.currentLocation()"
-        [places]="store.sortedPlaces()"
-        [selectedPlace]="store.selectedPlace()">
-      </app-map>
+      <div class="section-header-row">
+        <div class="section-label">
+          <mat-icon>map</mat-icon>
+          <span>Map</span>
+        </div>
+        <div class="map-status-pill" *ngIf="store.loading()">
+          <mat-spinner diameter="16"></mat-spinner>
+          <span>Searching nearby...</span>
+        </div>
+      </div>
+
+      <div class="map-container-relative">
+        <app-map [currentLocation]="store.currentLocation()" [places]="store.sortedPlaces()"
+          [selectedPlace]="store.selectedPlace()">
+        </app-map>
+      </div>
     </div>
 
     <div class="list-section">
-      <app-loading *ngIf="store.loading()"></app-loading>
+      <div class="section-label" *ngIf="!store.loading() && store.sortedPlaces().length > 0">
+        <mat-icon>format_list_bulleted</mat-icon>
+        <span>Pandan Eateries</span>
+      </div>
 
-      <app-empty-state
-        *ngIf="!store.loading() && (store.error() || store.sortedPlaces().length === 0)"
-        [error]="store.error()"
-        (retry)="initLocationAndSearch()">
+      <app-empty-state *ngIf="!store.loading() && (store.error() || store.sortedPlaces().length === 0)"
+        [error]="store.error()" (retry)="initLocationAndSearch()">
       </app-empty-state>
 
       <div class="places-list" *ngIf="!store.loading() && store.sortedPlaces().length > 0">
-         <app-food-card
-           *ngFor="let place of store.sortedPlaces()"
-           [place]="place"
-           (select)="onPlaceSelect($event)">
-         </app-food-card>
+        <app-food-card *ngFor="let place of store.sortedPlaces()" [place]="place" (select)="onPlaceSelect($event)">
+        </app-food-card>
       </div>
     </div>
-  </div>
-</div>
+  </section>
+</main>

@@ -1,26 +1,57 @@
-<mat-card class="food-card" (click)="onSelect()">
-  <mat-card-header>
-    <mat-card-title>{{ place.name }}</mat-card-title>
-    <mat-card-subtitle *ngIf="place.distance">
-      {{ place.distance < 1000 ? (place.distance | number:'1.0-0') + 'm' : (place.distance / 1000 | number:'1.1-1') + 'km' }} away
-    </mat-card-subtitle>
-  </mat-card-header>
+<mat-card class="pandan-food-card" *ngIf="place" (click)="onSelect()">
+  <div class="card-hero" *ngIf="place.photos && place.photos.length > 0; else defaultHero">
+    <img [src]="place.photos[0]" [alt]="place.name" class="card-img" />
+    <div class="hero-overlay"></div>
+    <div class="hero-chip distance-chip" *ngIf="place.distance != null">
+      <mat-icon>near_me</mat-icon>
+      {{ place.distance < 1000 ? (place.distance | number:'1.0-0') + 'm' : (place.distance / 1000 | number:'1.1-1') + 'km' }}
+    </div>
+  </div>
 
-  <mat-card-content>
-    <div class="rating-row" *ngIf="place.rating">
-      <mat-icon color="accent">star</mat-icon>
-      <span>{{ place.rating }} ({{ place.userRatingsTotal }})</span>
+  <ng-template #defaultHero>
+    <div class="card-hero placeholder-hero">
+      <div class="hero-pattern"></div>
+      <mat-icon class="placeholder-icon">bakery_dining</mat-icon>
+      <div class="hero-chip distance-chip" *ngIf="place.distance != null">
+        <mat-icon>near_me</mat-icon>
+        {{ place.distance < 1000 ? (place.distance | number:'1.0-0') + 'm' : (place.distance / 1000 | number:'1.1-1') + 'km' }}
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="card-body">
+    <div class="card-header-row">
+      <h3 class="place-name">{{ place.name }}</h3>
+      <div class="status-badge" [ngClass]="{'open': place.openNow === true, 'closed': place.openNow === false}">
+        <span class="status-dot"></span>
+        <span *ngIf="place.openNow === true">Open</span>
+        <span *ngIf="place.openNow === false">Closed</span>
+        <span *ngIf="place.openNow === undefined">Hours N/A</span>
+      </div>
     </div>
 
-    <div class="status" [ngClass]="{'open': place.openNow, 'closed': place.openNow === false}">
-      <span *ngIf="place.openNow === true">Open Now</span>
-      <span *ngIf="place.openNow === false">Closed</span>
-    </div>
-  </mat-card-content>
+    <p class="address-line" *ngIf="place.address">
+      <mat-icon class="address-icon">place</mat-icon>
+      <span>{{ place.address }}</span>
+    </p>
 
-  <mat-card-actions>
-    <button mat-button color="primary" (click)="$event.stopPropagation(); getGoogleMapsLink()">
-      <mat-icon>directions</mat-icon> Directions
-    </button>
-  </mat-card-actions>
+    <div class="meta-row">
+      <div class="rating-badge" *ngIf="place.rating">
+        <mat-icon class="star-icon">star</mat-icon>
+        <span class="rating-val">{{ place.rating }}</span>
+        <span class="rating-count" *ngIf="place.userRatingsTotal">({{ place.userRatingsTotal }})</span>
+      </div>
+
+      <div class="pandan-tag">
+        <mat-icon class="tag-icon">eco</mat-icon>
+        <span>Pandan Specialty</span>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <button mat-flat-button class="directions-btn" (click)="$event.stopPropagation(); getGoogleMapsLink()">
+        <mat-icon>directions</mat-icon> Get Directions
+      </button>
+    </div>
+  </div>
 </mat-card>

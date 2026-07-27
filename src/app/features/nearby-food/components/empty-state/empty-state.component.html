@@ -1,9 +1,16 @@
 <div class="empty-container">
-  <mat-icon *ngIf="!error">search_off</mat-icon>
-  <mat-icon *ngIf="error" color="warn">error_outline</mat-icon>
+  <div class="icon-circle" [class.error-icon]="error">
+    <mat-icon *ngIf="!error">eco</mat-icon>
+    <mat-icon *ngIf="error">error_outline</mat-icon>
+  </div>
 
-  <p *ngIf="!error">No pandan food found nearby. Try adjusting filters.</p>
-  <p *ngIf="error" class="error-text">{{ error }}</p>
+  <h3 class="empty-title" *ngIf="!error">No Pandan Treats Found</h3>
+  <h3 class="empty-title error-title" *ngIf="error">Search Encountered an Issue</h3>
 
-  <button *ngIf="error" mat-stroked-button color="primary" (click)="retry.emit()">Retry</button>
+  <p class="empty-desc" *ngIf="!error">We couldn't find food places matching your current radius or filters. Try expanding your search radius or clearing keyword filters.</p>
+  <p class="empty-desc error-text" *ngIf="error">{{ error }}</p>
+
+  <button *ngIf="error" mat-flat-button class="retry-btn" (click)="retry.emit()">
+    <mat-icon>refresh</mat-icon> Try Again
+  </button>
 </div>

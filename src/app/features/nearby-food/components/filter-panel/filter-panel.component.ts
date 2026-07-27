@@ -5,13 +5,24 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-filter-panel',
   templateUrl: './filter-panel.component.html',
   styleUrls: ['./filter-panel.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonToggleModule]
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatButtonModule
+  ]
 })
 export class FilterPanelComponent {
   radius = 1000;
@@ -19,8 +30,13 @@ export class FilterPanelComponent {
   minRating = 0;
   openNow = false;
   keyword = '';
+  isCollapsed = false;
 
   @Output() filterChange = new EventEmitter<any>();
+
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+  }
 
   emitChanges() {
     this.filterChange.emit({
