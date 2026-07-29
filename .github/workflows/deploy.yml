@@ -40,6 +40,7 @@ jobs:
         run: |
           node scripts/set-env.js
           npx ng build --configuration production --base-href ./
+          cp dist/pandan-app/browser/index.html dist/pandan-app/browser/404.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
