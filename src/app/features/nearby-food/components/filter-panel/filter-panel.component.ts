@@ -30,7 +30,7 @@ export class FilterPanelComponent {
   minRating = 0;
   openNow = false;
   keyword = '';
-  isCollapsed = false;
+  isCollapsed = true;
 
   @Output() filterChange = new EventEmitter<any>();
 
