@@ -4,8 +4,8 @@
       <img src="cute-pandan.svg" alt="Cute Pandan" class="brand-avatar" />
     </div>
 
-    <h2 class="login-title">Access Protected</h2>
-    <p class="login-desc">Enter credentials to unlock <strong>斑兰Yan</strong> nearby food finder.</p>
+    <h2 class="login-title">Welcome</h2>
+    <p class="login-desc">Enter credentials to explore the <strong>斑兰Yan</strong> app.</p>
 
     <form (ngSubmit)="onSubmit()" class="login-form">
       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
@@ -16,9 +16,11 @@
 
       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
         <mat-label>Password</mat-label>
-        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password"
+          placeholder="••••••••" required autocomplete="current-password" />
         <mat-icon matPrefix class="field-icon">lock</mat-icon>
-        <button mat-icon-button type="button" matSuffix (click)="hidePassword = !hidePassword" aria-label="Toggle password visibility">
+        <button mat-icon-button type="button" matSuffix (click)="hidePassword = !hidePassword"
+          aria-label="Toggle password visibility">
           <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
       </mat-form-field>
