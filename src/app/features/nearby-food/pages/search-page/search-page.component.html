@@ -13,9 +13,8 @@
         <p class="tagline">Your destination for fragrant pandan treats & local favorites.</p>
       </div>
     </div>
-    <button mat-stroked-button class="logout-btn" *ngIf="authService.isAuthenticated()" (click)="onLogout()" aria-label="Log out of application">
-      <mat-icon>logout</mat-icon>
-      <span>Logout</span>
+    <button mat-icon-button class="logout-btn" *ngIf="authService.isAuthenticated()" (click)="onLogout()" aria-label="Log out of application" title="Log out">
+      <mat-icon class="logout-icon">logout</mat-icon>
     </button>
   </div>
 </header>
