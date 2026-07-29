@@ -134,7 +134,7 @@
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
 
 .custom-field {
@@ -142,7 +142,6 @@
 
   .field-icon {
     color: var(--pandan-primary);
-    margin-right: 8px;
   }
 }
 

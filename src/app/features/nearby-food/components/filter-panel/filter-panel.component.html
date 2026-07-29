@@ -17,7 +17,7 @@
   </div>
 
   <div class="filter-grid" *ngIf="!isCollapsed">
-    <mat-form-field appearance="outline" class="custom-field">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
       <mat-label>Search Radius</mat-label>
       <mat-select [(ngModel)]="radius" (selectionChange)="emitChanges()">
         <mat-option [value]="500">500m (Walking)</mat-option>
@@ -28,7 +28,7 @@
       <mat-icon matPrefix class="field-icon">near_me</mat-icon>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="custom-field">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
       <mat-label>Sort Results By</mat-label>
       <mat-select [(ngModel)]="sort" (selectionChange)="emitChanges()">
         <mat-option value="distance">Distance (Nearest First)</mat-option>
@@ -37,7 +37,7 @@
       <mat-icon matPrefix class="field-icon">swap_vert</mat-icon>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="custom-field">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
       <mat-label>Minimum Rating</mat-label>
       <mat-select [(ngModel)]="minRating" (selectionChange)="emitChanges()">
         <mat-option [value]="0">Any Rating</mat-option>
@@ -48,7 +48,7 @@
       <mat-icon matPrefix class="field-icon star-icon">star</mat-icon>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="custom-field keyword-field">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field keyword-field">
       <mat-label>Search Keyword</mat-label>
       <input matInput [(ngModel)]="keyword" (keyup)="emitChanges()" placeholder="e.g. kuih, cake, coconut">
       <mat-icon matPrefix class="field-icon">search</mat-icon>

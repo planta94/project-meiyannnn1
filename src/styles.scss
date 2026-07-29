@@ -61,56 +61,26 @@ html, body {
   --mdc-theme-primary: var(--pandan-primary);
 }
 
-/* Modern Slim Form Field Styling with Precise Label Positioning */
+/* Modern Form Field Styling with Pandan Design Tokens */
 .mat-mdc-form-field {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  font-size: 0.84rem !important;
+  font-size: 0.88rem !important;
+  width: 100%;
 
   .mdc-text-field--outlined {
-    --mdc-outlined-text-field-container-shape: 10px;
+    --mdc-outlined-text-field-container-shape: 12px;
     --mdc-outlined-text-field-focus-outline-color: var(--pandan-emerald);
     --mdc-outlined-text-field-hover-outline-color: var(--pandan-emerald);
-    --mdc-outlined-text-field-outline-color: rgba(39, 122, 98, 0.22);
+    --mdc-outlined-text-field-outline-color: rgba(39, 122, 98, 0.25);
   }
 
-  .mat-mdc-text-field-wrapper {
-    height: 42px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
-
-  .mat-mdc-form-field-flex {
-    height: 42px !important;
-    align-items: center !important;
-  }
-
-  .mat-mdc-form-field-infix {
-    min-height: 42px !important;
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-
-  .mat-mdc-floating-label {
-    top: 21px !important;
-    font-size: 0.82rem !important;
-  }
-
-  .mdc-text-field--label-floating .mat-mdc-floating-label {
-    top: 3px !important;
-    font-size: 0.72rem !important;
-    transform: translateY(-50%) scale(0.85) !important;
-    background: #ffffff;
-    padding: 0 4px;
+  .mat-mdc-form-field-icon-prefix {
+    padding-right: 6px;
+    color: var(--pandan-emerald);
   }
 
   .mat-mdc-select-trigger, input.mat-mdc-input-element {
-    font-size: 0.84rem !important;
-  }
-
-  .mat-mdc-form-field-subscript-wrapper {
-    display: none;
+    font-size: 0.88rem !important;
   }
 }
 

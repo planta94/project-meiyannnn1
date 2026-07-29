@@ -8,13 +8,13 @@
     <p class="login-desc">Enter credentials to unlock <strong>斑兰Yan</strong> nearby food finder.</p>
 
     <form (ngSubmit)="onSubmit()" class="login-form">
-      <mat-form-field appearance="outline" class="custom-field">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
         <mat-label>Username</mat-label>
         <input matInput [(ngModel)]="username" name="username" placeholder="pandan" required autocomplete="username" />
         <mat-icon matPrefix class="field-icon">person</mat-icon>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="custom-field">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
         <mat-label>Password</mat-label>
         <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
         <mat-icon matPrefix class="field-icon">lock</mat-icon>

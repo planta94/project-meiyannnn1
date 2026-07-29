@@ -86,6 +86,11 @@ export class SearchPageComponent implements OnInit {
     this.startApp();
   }
 
+  onLogout() {
+    this.authService.logout();
+    this.snackBar.open('Logged out successfully', 'Close', { duration: 3000 });
+  }
+
   async initLocationAndSearch() {
     this.isModalDismissed = false;
     this.store.setLoading(true);
