@@ -174,7 +174,8 @@ export class SearchPageComponent implements OnInit {
           }).filter(Boolean);
         }
 
-        const isOpenNow = this.filterService.isPlaceOpenNow(p.opening_hours || p.regularOpeningHours || p);
+        const isOpenNow = this.filterService.isPlaceOpenNow(p);
+        const businessHours = this.filterService.extractWeekdayText(p);
 
         return {
           id: p.place_id || p.id || Math.random().toString(),
@@ -184,6 +185,7 @@ export class SearchPageComponent implements OnInit {
           address: p.vicinity || p.formatted_address || p.formattedAddress || 'Nearby',
           location: { lat: latVal, lng: lngVal },
           openNow: isOpenNow,
+          businessHours: businessHours,
           distance: dist,
           photos: photosList
         };

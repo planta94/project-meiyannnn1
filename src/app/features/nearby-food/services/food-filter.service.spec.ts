@@ -109,6 +109,68 @@ describe('FoodFilterService', () => {
       const nighttime = new Date(2026, 6, 30, 23, 0, 0);
       expect(service.isPlaceOpenNow(mockHours, nighttime)).toBe(false);
     });
+
+    it('should handle direct boolean openNow and open_now flags', () => {
+      expect(service.isPlaceOpenNow({ openNow: true })).toBe(true);
+      expect(service.isPlaceOpenNow({ open_now: false })).toBe(false);
+      expect(service.isPlaceOpenNow(true)).toBe(true);
+    });
+
+    it('should parse weekday text schedule with Unicode spaces and dashes', () => {
+      const Thursday = new Date(2026, 6, 30, 10, 0, 0); // Thursday 10:00 AM
+      const weekdayTextData = [
+        "Monday: 5:00 AM – 6:00 PM",
+        "Tuesday: 5:00 AM – 6:00 PM",
+        "Wednesday: 5:00 AM – 6:00 PM",
+        "Thursday: 5:00 AM – 6:00 PM",
+        "Friday: 5:00 AM – 6:00 PM",
+        "Saturday: 5:00 AM – 6:00 PM",
+        "Sunday: 5:00 AM – 6:00 PM"
+      ];
+
+      expect(service.isPlaceOpenNow(weekdayTextData, Thursday)).toBe(true);
+
+      const ThursdayNight = new Date(2026, 6, 30, 20, 0, 0); // Thursday 8:00 PM
+      expect(service.isPlaceOpenNow(weekdayTextData, ThursdayNight)).toBe(false);
+    });
+
+    it('should parse closed status from weekday text schedule', () => {
+      const Monday = new Date(2026, 6, 27, 10, 0, 0); // Monday 10:00 AM
+      const closedMondaySchedule = [
+        "Monday: Closed",
+        "Tuesday: 7:00 AM – 5:00 PM",
+        "Wednesday: 7:00 AM – 5:00 PM"
+      ];
+
+      expect(service.isPlaceOpenNow(closedMondaySchedule, Monday)).toBe(false);
+    });
+
+    it('should handle raw array Google Places responses with periods and weekday text', () => {
+      const Thursday10am = new Date(2026, 6, 30, 10, 0, 0);
+      const rawGoogleArray = [
+        1,
+        [
+          [ [0, 5, 0], [0, 18, 0] ],
+          [ [1, 5, 0], [1, 18, 0] ],
+          [ [2, 5, 0], [2, 18, 0] ],
+          [ [3, 5, 0], [3, 18, 0] ],
+          [ [4, 5, 0], [4, 18, 0] ],
+          [ [5, 5, 0], [5, 18, 0] ],
+          [ [6, 5, 0], [6, 18, 0] ]
+        ],
+        [
+          "Monday: 5:00 AM – 6:00 PM",
+          "Tuesday: 5:00 AM – 6:00 PM",
+          "Wednesday: 5:00 AM – 6:00 PM",
+          "Thursday: 5:00 AM – 6:00 PM",
+          "Friday: 5:00 AM – 6:00 PM",
+          "Saturday: 5:00 AM – 6:00 PM",
+          "Sunday: 5:00 AM – 6:00 PM"
+        ]
+      ];
+
+      expect(service.isPlaceOpenNow(rawGoogleArray, Thursday10am)).toBe(true);
+    });
   });
 });
 

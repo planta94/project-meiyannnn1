@@ -109,61 +109,274 @@ export class FoodFilterService {
     return result;
   }
 
+  /**
+   * Evaluates whether a place is currently open based on opening hours data.
+   * Supports direct booleans, live isOpen() functions, weekday text strings,
+   * period object arrays, and raw Google Places array structures.
+   */
   isPlaceOpenNow(openingHoursData: any, now: Date = new Date()): boolean | undefined {
-    if (!openingHoursData) return undefined;
+    if (openingHoursData === undefined || openingHoursData === null) return undefined;
 
-    // 1. If live Google Maps isOpen function is available, attempt to use it
-    if (typeof openingHoursData.isOpen === 'function') {
+    // 1. Direct boolean property check
+    if (typeof openingHoursData === 'boolean') return openingHoursData;
+    if (typeof openingHoursData.openNow === 'boolean') return openingHoursData.openNow;
+    if (typeof openingHoursData.open_now === 'boolean') return openingHoursData.open_now;
+    if (typeof openingHoursData.opening_hours?.open_now === 'boolean') return openingHoursData.opening_hours.open_now;
+    if (typeof openingHoursData.opening_hours?.openNow === 'boolean') return openingHoursData.opening_hours.openNow;
+    if (typeof openingHoursData.regularOpeningHours?.openNow === 'boolean') return openingHoursData.regularOpeningHours.openNow;
+
+    // 2. Direct isOpen() method execution
+    const isOpenFn = openingHoursData.isOpen || openingHoursData.regularOpeningHours?.isOpen || openingHoursData.opening_hours?.isOpen;
+    if (typeof isOpenFn === 'function') {
       try {
-        const liveStatus = openingHoursData.isOpen();
+        const liveStatus = isOpenFn.call(openingHoursData);
         if (typeof liveStatus === 'boolean') return liveStatus;
       } catch (e) {
-        // Fall back to period computation below if live call throws
+        // Fall back to schedule extraction below
       }
     }
 
-    // 2. Extract periods array from raw object
-    const periods = openingHoursData.periods || openingHoursData.regularOpeningHours?.periods;
-    if (!Array.isArray(periods) || periods.length === 0) {
-      if (typeof openingHoursData.open_now === 'boolean') {
-        return openingHoursData.open_now;
+    // 3. Extract and parse weekday descriptions text (e.g. "Monday: 5:00 AM – 6:00 PM")
+    const weekdayText = this.extractWeekdayText(openingHoursData);
+    if (weekdayText && weekdayText.length > 0) {
+      const parsedFromText = this.evaluateOpenFromWeekdayText(weekdayText, now);
+      if (parsedFromText !== undefined) {
+        return parsedFromText;
       }
-      return undefined;
     }
 
-    // 24 Hours Open Check (1 period with open and no close)
-    if (periods.length === 1 && periods[0].open && !periods[0].close) {
+    // 4. Extract and parse periods structure
+    const periods = this.extractPeriods(openingHoursData);
+    if (periods && periods.length > 0) {
+      const parsedFromPeriods = this.evaluateOpenFromPeriods(periods, now);
+      if (parsedFromPeriods !== undefined) {
+        return parsedFromPeriods;
+      }
+    }
+
+    // 5. Fallback check for open_now / openNow inside sub-objects if schedules absent
+    if (typeof openingHoursData.open_now === 'boolean') return openingHoursData.open_now;
+    if (typeof openingHoursData.openNow === 'boolean') return openingHoursData.openNow;
+
+    return undefined;
+  }
+
+  /**
+   * Extracts an array of weekday text schedule strings from various Google Places response formats.
+   */
+  extractWeekdayText(data: any): string[] | undefined {
+    if (!data) return undefined;
+
+    if (Array.isArray(data)) {
+      if (data.length > 0 && typeof data[0] === 'string' && this.containsDayName(data[0])) {
+        return data as string[];
+      }
+      for (const item of data) {
+        if (Array.isArray(item) && item.length > 0 && typeof item[0] === 'string' && this.containsDayName(item[0])) {
+          return item as string[];
+        }
+      }
+    }
+
+    const textArr = data.weekdayDescriptions ||
+                    data.weekday_text ||
+                    data.weekdayText ||
+                    data.businessHours ||
+                    data.regularOpeningHours?.weekdayDescriptions ||
+                    data.opening_hours?.weekday_text ||
+                    data.opening_hours?.weekdayDescriptions;
+
+    if (Array.isArray(textArr) && textArr.length > 0) {
+      return textArr as string[];
+    }
+
+    return undefined;
+  }
+
+  private containsDayName(str: string): boolean {
+    if (!str || typeof str !== 'string') return false;
+    const lower = str.toLowerCase();
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    return days.some(d => lower.includes(d));
+  }
+
+  private evaluateOpenFromWeekdayText(weekdayText: string[], now: Date): boolean | undefined {
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const currentDayName = days[now.getDay()];
+
+    const targetLine = weekdayText.find(line => {
+      if (typeof line !== 'string') return false;
+      const lower = line.toLowerCase();
+      return lower.startsWith(currentDayName) || lower.includes(`${currentDayName}:`) || lower.includes(currentDayName);
+    });
+
+    if (!targetLine) return undefined;
+
+    const cleanedLine = targetLine
+      .replace(/[\u202F\u2009\u00A0]/g, ' ')
+      .replace(/[\u2013\u2014\u2212]/g, '-')
+      .trim();
+
+    const lowerLine = cleanedLine.toLowerCase();
+
+    if (lowerLine.includes('closed') && !lowerLine.includes('open')) {
+      return false;
+    }
+
+    if (lowerLine.includes('24 hours') || lowerLine.includes('open 24')) {
       return true;
     }
 
-    const currentDay = now.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+    const colonIdx = cleanedLine.indexOf(':');
+    const scheduleText = colonIdx !== -1 ? cleanedLine.substring(colonIdx + 1) : cleanedLine;
+
+    const shifts = scheduleText.split(',');
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    let hasValidShift = false;
+
+    for (const shift of shifts) {
+      const parts = shift.split('-').map(s => s.trim()).filter(Boolean);
+      if (parts.length >= 2) {
+        const startMins = this.parseTimeToMinutes(parts[0]);
+        const endMins = this.parseTimeToMinutes(parts[1]);
+
+        if (startMins !== null && endMins !== null) {
+          hasValidShift = true;
+          if (startMins <= endMins) {
+            if (currentMinutes >= startMins && currentMinutes < endMins) {
+              return true;
+            }
+          } else {
+            if (currentMinutes >= startMins || currentMinutes < endMins) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+
+    return hasValidShift ? false : undefined;
+  }
+
+  private parseTimeToMinutes(str: string): number | null {
+    if (!str) return null;
+    const cleanStr = str.trim().toLowerCase();
+    const isPm = cleanStr.includes('pm');
+    const isAm = cleanStr.includes('am');
+
+    const match = cleanStr.match(/(\d{1,2})(?::(\d{2}))?/);
+    if (!match) return null;
+
+    let hour = parseInt(match[1], 10);
+    const minute = match[2] ? parseInt(match[2], 10) : 0;
+
+    if (isNaN(hour) || isNaN(minute)) return null;
+
+    if (isPm && hour < 12) hour += 12;
+    if (isAm && hour === 12) hour = 0;
+
+    return hour * 60 + minute;
+  }
+
+  extractPeriods(data: any): any[] | undefined {
+    if (!data) return undefined;
+
+    if (Array.isArray(data)) {
+      if (data.length > 0 && Array.isArray(data[0])) {
+        if (data[0].length > 0 && (Array.isArray(data[0][0]) || data[0][0]?.open)) {
+          return data;
+        }
+      }
+      for (const item of data) {
+        if (Array.isArray(item) && item.length > 0 && Array.isArray(item[0]) && (Array.isArray(item[0][0]) || item[0][0]?.open)) {
+          return item;
+        }
+      }
+    }
+
+    const periods = data.periods ||
+                    data.regularOpeningHours?.periods ||
+                    data.opening_hours?.periods;
+
+    if (Array.isArray(periods) && periods.length > 0) {
+      return periods;
+    }
+
+    return undefined;
+  }
+
+  private evaluateOpenFromPeriods(periods: any[], now: Date): boolean | undefined {
+    if (!periods || periods.length === 0) return undefined;
+
+    if (periods.length === 1) {
+      const p = periods[0];
+      if ((p.open && !p.close) || (Array.isArray(p) && p.length === 1)) {
+        return true;
+      }
+    }
+
+    const currentDay = now.getDay();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    let checkedPeriodsForToday = false;
 
     for (const period of periods) {
-      if (!period.open) continue;
+      let openDay: number | undefined;
+      let openHour: number | undefined;
+      let openMin: number | undefined;
 
-      const openDay = period.open.day;
-      const openHour = period.open.hour ?? period.open.hours ?? parseInt((period.open.time || '0').slice(0, 2), 10);
-      const openMin = period.open.minute ?? period.open.minutes ?? parseInt((period.open.time || '0').slice(2, 4), 10);
-      const openTimeMinutes = (openHour || 0) * 60 + (openMin || 0);
+      let closeDay: number | undefined;
+      let closeHour: number | undefined;
+      let closeMin: number | undefined;
 
-      if (!period.close) {
+      if (Array.isArray(period)) {
+        const openArr = period[0];
+        const closeArr = period[1];
+
+        if (Array.isArray(openArr)) {
+          openDay = openArr[0];
+          openHour = openArr[1];
+          openMin = openArr[2] ?? 0;
+        }
+
+        if (Array.isArray(closeArr)) {
+          closeDay = closeArr[0];
+          closeHour = closeArr[1];
+          closeMin = closeArr[2] ?? 0;
+        }
+      } else if (typeof period === 'object' && period !== null) {
+        if (period.open) {
+          openDay = period.open.day;
+          openHour = period.open.hour ?? period.open.hours ?? parseInt((period.open.time || '0').slice(0, 2), 10);
+          openMin = period.open.minute ?? period.open.minutes ?? parseInt((period.open.time || '0').slice(2, 4), 10);
+        }
+
+        if (period.close) {
+          closeDay = period.close.day;
+          closeHour = period.close.hour ?? period.close.hours ?? parseInt((period.close.time || '0').slice(0, 2), 10);
+          closeMin = period.close.minute ?? period.close.minutes ?? parseInt((period.close.time || '0').slice(2, 4), 10);
+        }
+      }
+
+      if (openDay === undefined || openHour === undefined) continue;
+
+      if (openDay === currentDay) {
+        checkedPeriodsForToday = true;
+      }
+
+      const openTimeMinutes = openHour * 60 + (openMin || 0);
+
+      if (closeDay === undefined || closeHour === undefined) {
         if (openDay === currentDay) return true;
         continue;
       }
 
-      const closeDay = period.close.day;
-      const closeHour = period.close.hour ?? period.close.hours ?? parseInt((period.close.time || '0').slice(0, 2), 10);
-      const closeMin = period.close.minute ?? period.close.minutes ?? parseInt((period.close.time || '0').slice(2, 4), 10);
-      const closeTimeMinutes = (closeHour || 0) * 60 + (closeMin || 0);
+      const closeTimeMinutes = closeHour * 60 + (closeMin || 0);
 
-      // Same-day period (e.g. 09:00 to 22:00)
       if (openDay === closeDay) {
         if (currentDay === openDay && currentMinutes >= openTimeMinutes && currentMinutes < closeTimeMinutes) {
           return true;
         }
       } else {
-        // Overnight period (e.g. Fri 18:00 to Sat 02:00)
         if (currentDay === openDay && currentMinutes >= openTimeMinutes) {
           return true;
         }
@@ -173,7 +386,7 @@ export class FoodFilterService {
       }
     }
 
-    return false;
+    return checkedPeriodsForToday ? false : undefined;
   }
 }
 
