@@ -119,7 +119,8 @@ export class PlacesService {
                   lng: () => lngNum
                 }
               },
-              openNow: p.regularOpeningHours?.isOpen?.() ?? true,
+              openNow: typeof p.regularOpeningHours?.isOpen === 'function' ? p.regularOpeningHours.isOpen() : undefined,
+              opening_hours: p.regularOpeningHours || p.opening_hours,
               photoUrls: photoUrls
             };
           });

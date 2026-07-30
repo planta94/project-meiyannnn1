@@ -108,4 +108,72 @@ export class FoodFilterService {
 
     return result;
   }
+
+  isPlaceOpenNow(openingHoursData: any, now: Date = new Date()): boolean | undefined {
+    if (!openingHoursData) return undefined;
+
+    // 1. If live Google Maps isOpen function is available, attempt to use it
+    if (typeof openingHoursData.isOpen === 'function') {
+      try {
+        const liveStatus = openingHoursData.isOpen();
+        if (typeof liveStatus === 'boolean') return liveStatus;
+      } catch (e) {
+        // Fall back to period computation below if live call throws
+      }
+    }
+
+    // 2. Extract periods array from raw object
+    const periods = openingHoursData.periods || openingHoursData.regularOpeningHours?.periods;
+    if (!Array.isArray(periods) || periods.length === 0) {
+      if (typeof openingHoursData.open_now === 'boolean') {
+        return openingHoursData.open_now;
+      }
+      return undefined;
+    }
+
+    // 24 Hours Open Check (1 period with open and no close)
+    if (periods.length === 1 && periods[0].open && !periods[0].close) {
+      return true;
+    }
+
+    const currentDay = now.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    for (const period of periods) {
+      if (!period.open) continue;
+
+      const openDay = period.open.day;
+      const openHour = period.open.hour ?? period.open.hours ?? parseInt((period.open.time || '0').slice(0, 2), 10);
+      const openMin = period.open.minute ?? period.open.minutes ?? parseInt((period.open.time || '0').slice(2, 4), 10);
+      const openTimeMinutes = (openHour || 0) * 60 + (openMin || 0);
+
+      if (!period.close) {
+        if (openDay === currentDay) return true;
+        continue;
+      }
+
+      const closeDay = period.close.day;
+      const closeHour = period.close.hour ?? period.close.hours ?? parseInt((period.close.time || '0').slice(0, 2), 10);
+      const closeMin = period.close.minute ?? period.close.minutes ?? parseInt((period.close.time || '0').slice(2, 4), 10);
+      const closeTimeMinutes = (closeHour || 0) * 60 + (closeMin || 0);
+
+      // Same-day period (e.g. 09:00 to 22:00)
+      if (openDay === closeDay) {
+        if (currentDay === openDay && currentMinutes >= openTimeMinutes && currentMinutes < closeTimeMinutes) {
+          return true;
+        }
+      } else {
+        // Overnight period (e.g. Fri 18:00 to Sat 02:00)
+        if (currentDay === openDay && currentMinutes >= openTimeMinutes) {
+          return true;
+        }
+        if (currentDay === closeDay && currentMinutes < closeTimeMinutes) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
+

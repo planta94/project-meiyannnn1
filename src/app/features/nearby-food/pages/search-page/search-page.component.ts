@@ -174,16 +174,7 @@ export class SearchPageComponent implements OnInit {
           }).filter(Boolean);
         }
 
-        let isOpenNow: boolean | undefined = p.openNow;
-        if (isOpenNow === undefined && p.opening_hours) {
-          if (typeof p.opening_hours.isOpen === 'function') {
-            try { isOpenNow = p.opening_hours.isOpen(); } catch (e) {
-              // ignore check failure
-            }
-          } else if (typeof p.opening_hours.open_now === 'boolean') {
-            isOpenNow = p.opening_hours.open_now;
-          }
-        }
+        const isOpenNow = this.filterService.isPlaceOpenNow(p.opening_hours || p.regularOpeningHours || p);
 
         return {
           id: p.place_id || p.id || Math.random().toString(),

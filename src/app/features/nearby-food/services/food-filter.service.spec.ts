@@ -70,4 +70,45 @@ describe('FoodFilterService', () => {
          expect(unique[1].name).toBe('Place 2');
      });
   });
+
+  describe('isPlaceOpenNow', () => {
+    it('should return undefined for missing opening hours data', () => {
+      expect(service.isPlaceOpenNow(null)).toBeUndefined();
+      expect(service.isPlaceOpenNow(undefined)).toBeUndefined();
+      expect(service.isPlaceOpenNow({})).toBeUndefined();
+    });
+
+    it('should call live isOpen method if available', () => {
+      const mockOpeningHours = { isOpen: () => true };
+      expect(service.isPlaceOpenNow(mockOpeningHours)).toBe(true);
+
+      const mockClosed = { isOpen: () => false };
+      expect(service.isPlaceOpenNow(mockClosed)).toBe(false);
+    });
+
+    it('should return true for 24-hour places', () => {
+      const mock24h = {
+        periods: [{ open: { day: 0, hour: 0, minute: 0 } }]
+      };
+      expect(service.isPlaceOpenNow(mock24h)).toBe(true);
+    });
+
+    it('should dynamically evaluate open status against specified date/time', () => {
+      // Thursday (day 4), 09:00 - 22:00
+      const mockHours = {
+        periods: [
+          { open: { day: 4, hour: 9, minute: 0 }, close: { day: 4, hour: 22, minute: 0 } }
+        ]
+      };
+
+      // Thursday 2:00 PM (14:00) -> Open
+      const daytime = new Date(2026, 6, 30, 14, 0, 0); // 2026-07-30 is Thursday (day 4)
+      expect(service.isPlaceOpenNow(mockHours, daytime)).toBe(true);
+
+      // Thursday 11:00 PM (23:00) -> Closed
+      const nighttime = new Date(2026, 6, 30, 23, 0, 0);
+      expect(service.isPlaceOpenNow(mockHours, nighttime)).toBe(false);
+    });
+  });
 });
+
