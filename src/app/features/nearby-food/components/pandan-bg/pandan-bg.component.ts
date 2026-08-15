@@ -122,7 +122,7 @@ export class PandanBgComponent implements OnInit, OnDestroy {
     // Color palette for pandan leaves
     const colors = [0x2e7d32, 0x1b5e20, 0x388e3c, 0x43a047, 0x277a62];
 
-    const leafCount = 22;
+    const leafCount = 18;
     for (let i = 0; i < leafCount; i++) {
       const color = colors[i % colors.length];
       const material = new THREE.MeshStandardMaterial({
@@ -165,7 +165,7 @@ export class PandanBgComponent implements OnInit, OnDestroy {
   }
 
   private createFloatingParticles() {
-    const particleCount = 70;
+    const particleCount = 56;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
 

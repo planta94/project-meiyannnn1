@@ -6,21 +6,27 @@
   <div class="header-content">
     <div class="brand">
       <div class="logo-badge">
-        <img src="cute-pandan.svg" alt="Cute Pandan" class="pandan-brand-icon" />
+        <img src="mei-yan-dj-pandan.svg" alt="Mei Yan DJ Pandan" class="pandan-brand-icon" />
       </div>
       <div class="brand-text">
         <h1>斑兰Yan</h1>
-        <p class="tagline">Your destination for fragrant pandan treats & local favorites.</p>
+        <p class="tagline">
+          <mat-icon class="tag-sparkle">auto_awesome</mat-icon>
+          <span>颜薇恩的斑兰指南 • Food Finder</span>
+        </p>
       </div>
     </div>
-    <button mat-icon-button class="logout-btn" *ngIf="authService.isAuthenticated()" (click)="onLogout()" aria-label="Log out of application" title="Log out">
+    <button mat-icon-button class="logout-btn" *ngIf="authService.isAuthenticated()" (click)="onLogout()"
+      aria-label="Log out of application" title="Log out">
       <mat-icon class="logout-icon">logout</mat-icon>
     </button>
   </div>
 </header>
 
 <!-- Modal Popup Overlay for Errors & No Results -->
-<div class="modal-backdrop" *ngIf="!store.loading() && !isModalDismissed && (store.error() || store.sortedPlaces().length === 0)" (click)="dismissModal()" (keyup.escape)="dismissModal()" tabindex="0" role="dialog">
+<div class="modal-backdrop"
+  *ngIf="!store.loading() && !isModalDismissed && (store.error() || store.sortedPlaces().length === 0)"
+  (click)="dismissModal()" (keyup.escape)="dismissModal()" tabindex="0" role="dialog">
   <div class="modal-card" (click)="$event.stopPropagation()" (keyup.escape)="$event.stopPropagation()" tabindex="0">
     <button mat-icon-button type="button" class="modal-close-btn" (click)="dismissModal()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
@@ -31,6 +37,8 @@
 </div>
 
 <main class="content-container">
+  <app-mei-yan-banner></app-mei-yan-banner>
+
   <section class="controls-section">
     <app-filter-panel (filterChange)="onFilterChange($event)"></app-filter-panel>
   </section>
@@ -55,7 +63,8 @@
 
         <!-- Selected Place Floating Card Overlay (Appears on marker click) -->
         <div class="selected-card-overlay" *ngIf="store.selectedPlace()">
-          <button mat-icon-button type="button" class="close-card-btn" (click)="store.setSelectedPlace(null)" aria-label="Close details">
+          <button mat-icon-button type="button" class="close-card-btn" (click)="store.setSelectedPlace(null)"
+            aria-label="Close details">
             <mat-icon>close</mat-icon>
           </button>
           <app-food-card [place]="store.selectedPlace()!"></app-food-card>

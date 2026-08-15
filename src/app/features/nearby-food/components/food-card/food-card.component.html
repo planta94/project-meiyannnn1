@@ -1,7 +1,11 @@
-<mat-card class="pandan-food-card" *ngIf="place" (click)="onSelect()">
+<mat-card class="pandan-food-card" *ngIf="place" (click)="onSelect()" (keyup.enter)="onSelect()" tabindex="0">
   <div class="card-hero" *ngIf="place.photos && place.photos.length > 0; else defaultHero">
     <img [src]="place.photos[0]" [alt]="place.name" class="card-img" />
     <div class="hero-overlay"></div>
+    <div class="hero-chip featured-chip" *ngIf="place.isFeaturedSpot">
+      <mat-icon>auto_awesome</mat-icon>
+      <span>精选推荐</span>
+    </div>
     <div class="hero-chip distance-chip" *ngIf="place.distance !== undefined && place.distance !== null">
       <mat-icon>near_me</mat-icon>
       {{ place.distance < 1000 ? (place.distance | number:'1.0-0') + 'm' : (place.distance / 1000 | number:'1.1-1') + 'km' }}
@@ -12,6 +16,10 @@
     <div class="card-hero placeholder-hero">
       <div class="hero-pattern"></div>
       <mat-icon class="placeholder-icon">bakery_dining</mat-icon>
+      <div class="hero-chip featured-chip" *ngIf="place.isFeaturedSpot">
+        <mat-icon>auto_awesome</mat-icon>
+        <span>精选推荐</span>
+      </div>
       <div class="hero-chip distance-chip" *ngIf="place.distance !== undefined && place.distance !== null">
         <mat-icon>near_me</mat-icon>
         {{ place.distance < 1000 ? (place.distance | number:'1.0-0') + 'm' : (place.distance / 1000 | number:'1.1-1') + 'km' }}
@@ -24,8 +32,8 @@
       <h3 class="place-name">{{ place.name }}</h3>
       <div class="status-badge" [ngClass]="{'open': place.openNow === true, 'closed': place.openNow === false}">
         <span class="status-dot"></span>
-        <span *ngIf="place.openNow === true">Open</span>
-        <span *ngIf="place.openNow === false">Closed</span>
+        <span *ngIf="place.openNow === true">Open • 营业中</span>
+        <span *ngIf="place.openNow === false">Closed • 已打烊</span>
         <span *ngIf="place.openNow === undefined">Hours N/A</span>
       </div>
     </div>
@@ -41,16 +49,11 @@
         <span class="rating-val">{{ place.rating }}</span>
         <span class="rating-count" *ngIf="place.userRatingsTotal">({{ place.userRatingsTotal }})</span>
       </div>
-
-      <div class="pandan-tag">
-        <mat-icon class="tag-icon">eco</mat-icon>
-        <span>Pandan Specialty</span>
-      </div>
     </div>
 
     <div class="card-footer">
       <button mat-flat-button class="directions-btn" (click)="$event.stopPropagation(); getGoogleMapsLink()">
-        <mat-icon>directions</mat-icon> Get Directions
+        <mat-icon>directions</mat-icon> Get Directions • 导航
       </button>
     </div>
   </div>

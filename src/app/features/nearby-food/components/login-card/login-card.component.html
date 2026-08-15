@@ -1,21 +1,21 @@
 <div class="login-overlay">
   <div class="login-card-box">
     <div class="header-brand-badge">
-      <img src="cute-pandan.svg" alt="Cute Pandan" class="brand-avatar" />
+      <img src="mei-yan-dj-pandan.svg" alt="Mei Yan DJ Pandan" class="brand-avatar" />
     </div>
 
-    <h2 class="login-title">Welcome</h2>
-    <p class="login-desc">Enter credentials to explore the <strong>斑兰Yan</strong> app.</p>
+    <h2 class="login-title">斑兰Yan</h2>
+    <p class="login-desc">颜薇恩专属周边美食与斑兰美馔探索系统 • Dedicated Food Finder</p>
 
     <form (ngSubmit)="onSubmit()" class="login-form">
       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
-        <mat-label>Username</mat-label>
+        <mat-label>Username / 用户名</mat-label>
         <input matInput [(ngModel)]="username" name="username" placeholder="pandan" required autocomplete="username" />
         <mat-icon matPrefix class="field-icon">person</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
-        <mat-label>Password</mat-label>
+        <mat-label>Password / 密码</mat-label>
         <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password"
           placeholder="••••••••" required autocomplete="current-password" />
         <mat-icon matPrefix class="field-icon">lock</mat-icon>
@@ -31,7 +31,7 @@
       </div>
 
       <button mat-flat-button class="unlock-btn" type="submit">
-        <mat-icon>key</mat-icon> Unlock App
+        <mat-icon>key</mat-icon> Unlock App • 进入应用
       </button>
     </form>
   </div>

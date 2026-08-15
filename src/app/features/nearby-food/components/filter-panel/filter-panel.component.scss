@@ -102,6 +102,62 @@
   animation: fadeIn 0.25s ease-in-out;
 }
 
+.featured-chip-btn {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  min-height: 42px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(255, 215, 0, 0.18));
+  border: 1.5px solid rgba(255, 193, 7, 0.45);
+  color: var(--pandan-dark);
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  box-sizing: border-box;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  .chip-star {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffb300;
+    flex-shrink: 0;
+  }
+
+  .chip-label {
+    display: inline-block;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.22), rgba(255, 215, 0, 0.32));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.25);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #2e7d32, #ffb300);
+    color: #ffffff;
+    border-color: #ffd54f;
+    box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
+
+    .chip-star {
+      color: #ffffff;
+    }
+  }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }

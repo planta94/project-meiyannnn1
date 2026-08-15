@@ -30,6 +30,7 @@ export class FilterPanelComponent {
   minRating = 0;
   openNow = false;
   keyword = '';
+  featuredOnly = false;
   isCollapsed = true;
 
   @Output() filterChange = new EventEmitter<any>();
@@ -38,13 +39,19 @@ export class FilterPanelComponent {
     this.isCollapsed = !this.isCollapsed;
   }
 
+  toggleFeaturedOnly() {
+    this.featuredOnly = !this.featuredOnly;
+    this.emitChanges();
+  }
+
   emitChanges() {
     this.filterChange.emit({
       radius: this.radius,
       sort: this.sort,
       minRating: this.minRating,
       openNow: this.openNow,
-      keyword: this.keyword
+      keyword: this.keyword,
+      featuredOnly: this.featuredOnly
     });
   }
 }

@@ -1,0 +1,75 @@
+<!-- Collapsed Draggable Rotating Vinyl Disc Widget -->
+<div *ngIf="isCollapsed()" cdkDrag (cdkDragStarted)="onDragStarted()" (cdkDragEnded)="onDragEnded()"
+  (click)="onDiscClick()" (keyup.enter)="expand()" class="draggable-disc-widget" role="button" tabindex="0"
+  aria-label="Expand Mei Yan Food Inspiration" title="Drag anywhere or click to open DJ Food Inspiration Dialog">
+
+  <div class="vinyl-disc-container">
+    <div class="vinyl-disc spinning">
+      <div class="vinyl-groove outer"></div>
+      <div class="vinyl-groove mid"></div>
+      <div class="vinyl-groove inner"></div>
+      <div class="vinyl-label">
+        <img src="mei-yan-dj-pandan.svg" alt="Mei Yan DJ Pandan Avatar" class="disc-avatar-img" />
+      </div>
+      <div class="vinyl-center-hole"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Expanded Modal Dialog Overlay -->
+<div class="banner-dialog-backdrop" *ngIf="!isCollapsed()" (click)="collapse()" (keyup.escape)="collapse()" tabindex="0"
+  role="dialog" aria-modal="true" aria-label="Mei Yan Food Inspiration Dialog">
+
+  <div class="banner-dialog-card" (click)="$event.stopPropagation()" (keyup.escape)="$event.stopPropagation()"
+    tabindex="0">
+    <div class="banner-glass-glow"></div>
+
+    <div class="dialog-header-row">
+      <div class="avatar-ring">
+        <img src="mei-yan-dj-pandan.svg" alt="Mei Yan DJ Pandan Avatar" class="dj-avatar-img" />
+      </div>
+      <div class="dialog-header-text">
+        <div class="radio-status">
+          <span class="live-dot"></span>
+          <span class="live-text">MY 阳光灿烂 • 每日灵感</span>
+        </div>
+        <h3 class="dialog-title">颜薇恩专属美食灵感</h3>
+      </div>
+    </div>
+
+    <div class="banner-content-section" *ngIf="quotes.length > 0">
+      <div class="quote-header">
+        <span class="quote-tag">
+          <mat-icon class="tag-icon">auto_awesome</mat-icon>
+          {{ quotes[currentIndex()].tag }}
+        </span>
+      </div>
+
+      <p class="quote-text">
+        “{{ quotes[currentIndex()].quote }}”
+      </p>
+
+      <div class="carousel-indicators">
+        <button *ngFor="let q of quotes; let i = index" type="button" class="dot-btn"
+          [class.active]="i === currentIndex()" (click)="setIndex(i)" [attr.aria-label]="'Go to quote ' + (i + 1)">
+        </button>
+      </div>
+    </div>
+
+    <div class="dialog-footer-actions">
+      <div class="nav-controls">
+        <button mat-icon-button type="button" class="nav-arrow-btn" (click)="prevQuote()" aria-label="Previous quote"
+          title="Previous quote">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button mat-icon-button type="button" class="nav-arrow-btn" (click)="nextQuote()" aria-label="Next quote"
+          title="Next quote">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+      <button mat-flat-button type="button" class="done-btn" (click)="collapse()">
+        <mat-icon>album</mat-icon> 收起
+      </button>
+    </div>
+  </div>
+</div>

@@ -94,6 +94,15 @@ export class FoodFilterService {
     });
   }
 
+  isFeaturedSpot(place: any): boolean {
+    if (!place || !place.name) return false;
+    if (typeof place.rating === 'number' && place.rating >= 4.2) return true;
+    if (this.isPandanRelated(place.name)) return true;
+    const lowerName = place.name.toLowerCase();
+    const featuredKeywords = ['cafe', 'coffee', 'bakery', 'dessert', 'nasi lemak', 'kuih', 'breakfast', 'tea', 'bistro', 'restaurant'];
+    return featuredKeywords.some(k => lowerName.includes(k));
+  }
+
   removeDuplicates(places: any[]): any[] {
     const uniqueIds = new Set<string>();
     const result = [];

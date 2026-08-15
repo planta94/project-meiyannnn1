@@ -6,6 +6,7 @@ import { FilterPanelComponent } from '../../components/filter-panel/filter-panel
 import { EmptyStateComponent } from '../../components/empty-state/empty-state.component';
 import { PandanBgComponent } from '../../components/pandan-bg/pandan-bg.component';
 import { LoginCardComponent } from '../../components/login-card/login-card.component';
+import { MeiYanBannerComponent } from '../../components/mei-yan-banner/mei-yan-banner.component';
 import { FoodStore } from '../../store/food.store';
 import { GeolocationService } from '../../../../core/services/geolocation.service';
 import { PlacesService } from '../../../../core/services/places.service';
@@ -32,6 +33,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     EmptyStateComponent,
     PandanBgComponent,
     LoginCardComponent,
+    MeiYanBannerComponent,
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
@@ -52,7 +54,8 @@ export class SearchPageComponent implements OnInit {
     sort: 'distance',
     minRating: 0,
     openNow: false,
-    keyword: ''
+    keyword: '',
+    featuredOnly: false
   };
 
   isModalDismissed = false;
@@ -118,7 +121,7 @@ export class SearchPageComponent implements OnInit {
 
     // Single targeted query to drastically reduce Google API calls & save budget
     const searchKeywords = ['pandan food', 'kuih'];
-    let allResults: any[] = [];
+    let allResults: any[];
 
     try {
       const cacheKey = `search_all_${loc.lat}_${loc.lng}_${radius}`;
@@ -176,6 +179,7 @@ export class SearchPageComponent implements OnInit {
 
         const isOpenNow = this.filterService.isPlaceOpenNow(p);
         const businessHours = this.filterService.extractWeekdayText(p);
+        const isFeatured = this.filterService.isFeaturedSpot(p);
 
         return {
           id: p.place_id || p.id || Math.random().toString(),
@@ -187,7 +191,8 @@ export class SearchPageComponent implements OnInit {
           openNow: isOpenNow,
           businessHours: businessHours,
           distance: dist,
-          photos: photosList
+          photos: photosList,
+          isFeaturedSpot: isFeatured
         };
       });
 
@@ -214,7 +219,8 @@ export class SearchPageComponent implements OnInit {
       sort: filters.sort,
       minRating: filters.minRating,
       openNow: filters.openNow,
-      keyword: filters.keyword
+      keyword: filters.keyword,
+      featuredOnly: filters.featuredOnly
     };
 
     this.applyFilters();
@@ -223,23 +229,28 @@ export class SearchPageComponent implements OnInit {
   private applyFilters() {
     let places = [...this.store.places()];
 
-    // 1. Min Rating Filter
+    // 1. Featured Only Filter
+    if (this.activeFilters.featuredOnly) {
+      places = places.filter(p => p.isFeaturedSpot === true);
+    }
+
+    // 2. Min Rating Filter
     if (this.activeFilters.minRating > 0) {
       places = places.filter(p => (p.rating || 0) >= this.activeFilters.minRating);
     }
 
-    // 2. Open Now Filter
+    // 3. Open Now Filter
     if (this.activeFilters.openNow) {
       places = places.filter(p => p.openNow === true);
     }
 
-    // 3. Keyword Filter
+    // 4. Keyword Filter
     if (this.activeFilters.keyword && this.activeFilters.keyword.trim() !== '') {
       const kw = this.activeFilters.keyword.toLowerCase();
       places = places.filter(p => p.name.toLowerCase().includes(kw));
     }
 
-    // 4. Sort
+    // 5. Sort
     if (this.activeFilters.sort === 'distance') {
       places.sort((a, b) => (a.distance || 0) - (b.distance || 0));
     } else if (this.activeFilters.sort === 'rating') {

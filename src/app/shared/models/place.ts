@@ -9,6 +9,7 @@ export interface Place {
   openNow?: boolean;
   businessHours?: string[];
   googleMapsLink?: string;
+  isFeaturedSpot?: boolean;
   location: {
     lat: number;
     lng: number;

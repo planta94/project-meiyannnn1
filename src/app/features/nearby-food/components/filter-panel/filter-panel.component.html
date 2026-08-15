@@ -1,10 +1,11 @@
 <div class="filter-card" [class.is-collapsed]="isCollapsed">
-  <div class="filter-header" (click)="toggleCollapse()" role="button" tabindex="0">
+  <div class="filter-header" (click)="toggleCollapse()" (keyup.enter)="toggleCollapse()" role="button" tabindex="0">
     <div class="header-left">
       <mat-icon class="filter-icon">tune</mat-icon>
-      <span class="filter-title">Filter & Refine</span>
+      <span class="filter-title">Filter & Refine • 美食筛选</span>
       <span class="active-summary" *ngIf="isCollapsed">
         {{ radius < 1000 ? radius + 'm' : (radius / 1000) + 'km' }} • {{ sort === 'distance' ? 'Nearest' : 'Top Rated' }}
+        <ng-container *ngIf="featuredOnly"> • 精选美馔</ng-container>
         <ng-container *ngIf="minRating > 0"> • {{ minRating }}+★</ng-container>
         <ng-container *ngIf="openNow"> • Open Now</ng-container>
         <ng-container *ngIf="keyword"> • "{{ keyword }}"</ng-container>
@@ -17,30 +18,39 @@
   </div>
 
   <div class="filter-grid" *ngIf="!isCollapsed">
+    <button 
+      type="button" 
+      class="featured-chip-btn" 
+      [class.active]="featuredOnly" 
+      (click)="toggleFeaturedOnly()">
+      <mat-icon class="chip-star">auto_awesome</mat-icon>
+      <span class="chip-label">精选斑兰与在地美馔 • Featured Treats</span>
+    </button>
+
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
-      <mat-label>Search Radius</mat-label>
+      <mat-label>Radius / 搜索半径</mat-label>
       <mat-select [(ngModel)]="radius" (selectionChange)="emitChanges()">
-        <mat-option [value]="500">500m (Walking)</mat-option>
-        <mat-option [value]="1000">1 km (Nearby)</mat-option>
-        <mat-option [value]="2000">2 km (Short Drive)</mat-option>
-        <mat-option [value]="5000">5 km (Expanded)</mat-option>
+        <mat-option [value]="500">500m (Walking • 步行)</mat-option>
+        <mat-option [value]="1000">1 km (Nearby • 附近)</mat-option>
+        <mat-option [value]="2000">2 km (Short Drive • 车程)</mat-option>
+        <mat-option [value]="5000">5 km (Expanded • 扩大)</mat-option>
       </mat-select>
       <mat-icon matPrefix class="field-icon">near_me</mat-icon>
     </mat-form-field>
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
-      <mat-label>Sort Results By</mat-label>
+      <mat-label>Sort By / 排序</mat-label>
       <mat-select [(ngModel)]="sort" (selectionChange)="emitChanges()">
-        <mat-option value="distance">Distance (Nearest First)</mat-option>
-        <mat-option value="rating">Rating (Highest First)</mat-option>
+        <mat-option value="distance">Distance • 距离优先</mat-option>
+        <mat-option value="rating">Rating • 评分优先</mat-option>
       </mat-select>
       <mat-icon matPrefix class="field-icon">swap_vert</mat-icon>
     </mat-form-field>
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field">
-      <mat-label>Minimum Rating</mat-label>
+      <mat-label>Min Rating / 最低评分</mat-label>
       <mat-select [(ngModel)]="minRating" (selectionChange)="emitChanges()">
-        <mat-option [value]="0">Any Rating</mat-option>
+        <mat-option [value]="0">Any Rating • 不限</mat-option>
         <mat-option [value]="3">3.0+ Stars</mat-option>
         <mat-option [value]="4">4.0+ Stars</mat-option>
         <mat-option [value]="4.5">4.5+ Stars</mat-option>
@@ -49,17 +59,17 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-field keyword-field">
-      <mat-label>Search Keyword</mat-label>
-      <input matInput [(ngModel)]="keyword" (keyup)="emitChanges()" placeholder="e.g. kuih, cake, coconut">
+      <mat-label>Keyword / 关键字</mat-label>
+      <input matInput [(ngModel)]="keyword" (keyup)="emitChanges()" placeholder="e.g. kuih, cake, coffee">
       <mat-icon matPrefix class="field-icon">search</mat-icon>
     </mat-form-field>
 
     <div class="toggle-container">
-      <span class="toggle-label">Status</span>
+      <span class="toggle-label">Status / 状态</span>
       <mat-button-toggle-group [(ngModel)]="openNow" (change)="emitChanges()" aria-label="Open Status" class="pandan-toggle">
-        <mat-button-toggle [value]="false">All Places</mat-button-toggle>
+        <mat-button-toggle [value]="false">All • 全部</mat-button-toggle>
         <mat-button-toggle [value]="true">
-          <mat-icon class="toggle-icon">storefront</mat-icon> Open Now
+          <mat-icon class="toggle-icon">storefront</mat-icon> Open Now • 营业中
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
