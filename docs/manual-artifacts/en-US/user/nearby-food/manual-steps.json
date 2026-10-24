@@ -1,0 +1,100 @@
+{
+  "chapterId": "nearby-food",
+  "featureTitle": "Discovering Nearby Pandan Food & Bakeries",
+  "summary": "Learn how to explore nearby Pandan chiffon cakes, kuih, and local bakeries with real-time distance and interactive map.",
+  "role": "user",
+  "locale": "en-US",
+  "routePath": "/",
+  "generatedAt": "2026-10-24T05:48:15.469Z",
+  "preconditions": [
+    "Browser location permission is granted.",
+    "Authenticated using preset access credentials."
+  ],
+  "steps": [
+    {
+      "stepNumber": 1,
+      "title": "Open Pandan Discovery Dashboard",
+      "userInstruction": "Launch the application in your browser. The system will detect your location and initialize the interactive food map.",
+      "expectedOutcome": "The hero header, 3D leaf backdrop, and interactive map container are displayed.",
+      "screenshotRelativePath": "./screenshots/step-01.png",
+      "responsiveScreenshots": [
+        {
+          "viewportName": "Mobile",
+          "width": 390,
+          "height": 844,
+          "screenshotRelativePath": "./screenshots/step-01-mobile.png"
+        }
+      ],
+      "notes": "Ensure your device location services are turned on for accurate geodesic distance calculations."
+    },
+    {
+      "stepNumber": 2,
+      "title": "Explore Nearby Pandan Pins on Map",
+      "userInstruction": "Scan the interactive Google Map to view pins indicating verified Pandan culinary locations within walking distance.",
+      "expectedOutcome": "Map markers display rating badges (e.g. 4.8★) positioned at exact geodesic coordinates.",
+      "screenshotRelativePath": "./screenshots/step-02.png",
+      "responsiveScreenshots": [
+        {
+          "viewportName": "Mobile",
+          "width": 390,
+          "height": 844,
+          "screenshotRelativePath": "./screenshots/step-02-mobile.png"
+        }
+      ],
+      "notes": "Each marker is filtered to exclude non-food businesses in townships named Pandan."
+    },
+    {
+      "stepNumber": 3,
+      "title": "Select a Spot for Detailed Information",
+      "userInstruction": "Click any green Pandan pin on the map to bring up the establishment card overlay.",
+      "expectedOutcome": "A floating card displays the food spot name, star rating, address, opening hours, and distance.",
+      "screenshotRelativePath": "./screenshots/step-03.png",
+      "responsiveScreenshots": [
+        {
+          "viewportName": "Mobile",
+          "width": 390,
+          "height": 844,
+          "screenshotRelativePath": "./screenshots/step-03-mobile.png"
+        }
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "title": "Review Spot Details & Opening Hours",
+      "userInstruction": "Inspect the specialty highlights, rating badge, address, and live open status.",
+      "expectedOutcome": "Detailed info confirms business name, photo preview, and open status.",
+      "screenshotRelativePath": "./screenshots/step-04.png",
+      "responsiveScreenshots": [
+        {
+          "viewportName": "Mobile",
+          "width": 390,
+          "height": 844,
+          "screenshotRelativePath": "./screenshots/step-04-mobile.png"
+        }
+      ],
+      "notes": "The badge tags top-tier chiffon cakes, authentic kuih, and waffles."
+    },
+    {
+      "stepNumber": 5,
+      "title": "Filter by Distance Radius and Rating",
+      "userInstruction": "Use the filter panel to select maximum walking distance (e.g., 1km, 3km, 5km) or filter by minimum rating.",
+      "expectedOutcome": "The map dynamically adjusts pins matching the updated filter preferences.",
+      "screenshotRelativePath": "./screenshots/step-05.png",
+      "responsiveScreenshots": [
+        {
+          "viewportName": "Mobile",
+          "width": 390,
+          "height": 844,
+          "screenshotRelativePath": "./screenshots/step-05-mobile.png"
+        }
+      ]
+    }
+  ],
+  "faqAndTroubleshooting": [
+    {
+      "scenario": "No Pandan Spots Visible within 1km",
+      "userMessage": "No authentic Pandan spots found nearby",
+      "resolution": "Expand search radius to 3km or 5km using the filter panel, or click \"Try Again\" after granting location permission."
+    }
+  ]
+}

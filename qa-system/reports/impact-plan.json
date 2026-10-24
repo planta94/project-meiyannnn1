@@ -1,0 +1,341 @@
+{
+  "baseRef": "e84b25ad6b622d6d853b8ca246c16357efea3b85",
+  "changedFiles": [
+    "e2e/tests/app.spec.ts",
+    "package-lock.json",
+    "package.json",
+    "playwright-report/index.html",
+    "src/app/features/nearby-food/components/empty-state/empty-state.component.spec.ts",
+    "src/app/features/nearby-food/components/filter-panel/filter-panel.component.spec.ts",
+    "src/app/features/nearby-food/components/food-card/food-card.component.spec.ts",
+    "src/app/features/nearby-food/components/loading/loading.component.spec.ts",
+    "src/app/features/nearby-food/components/map/map.component.spec.ts",
+    "src/app/features/nearby-food/pages/search-page/search-page.component.spec.ts"
+  ],
+  "openApiChanged": false,
+  "i18nChanged": false,
+  "impactedServices": [],
+  "impactedComponents": [
+    {
+      "key": "empty-state",
+      "filePath": "src/app/features/nearby-food/components/empty-state/empty-state.component.ts",
+      "templatePath": "src/app/features/nearby-food/components/empty-state/empty-state.component.html",
+      "specPath": "src/app/features/nearby-food/components/empty-state/empty-state.component.spec.ts",
+      "selector": "app-empty-state",
+      "className": "EmptyStateComponent",
+      "importedTypes": [
+        "CommonModule",
+        "MatIconModule",
+        "MatButtonModule"
+      ],
+      "isStandalone": true,
+      "isInlineTemplate": false,
+      "specStatus": "VERIFIED",
+      "detectedFeatures": {
+        "inputs": [
+          "error"
+        ],
+        "outputs": [
+          "retry"
+        ],
+        "models": [],
+        "templateBranches": 7,
+        "interactiveEvents": [
+          "click"
+        ],
+        "reactiveForms": [],
+        "i18nKeys": [],
+        "rbacDirectives": [],
+        "rxJsSubscriptions": 0
+      },
+      "dimensionsVerified": {
+        "functionalAndEdgeCases": false,
+        "errorAndDegradedStates": false,
+        "rbac": true,
+        "a11y": false,
+        "i18n": true,
+        "memoryLeakUnsubscribe": true
+      },
+      "ambiguitiesOrSuspectedBugs": [],
+      "lastContentHash": "f0b17783293d"
+    },
+    {
+      "key": "filter-panel",
+      "filePath": "src/app/features/nearby-food/components/filter-panel/filter-panel.component.ts",
+      "templatePath": "src/app/features/nearby-food/components/filter-panel/filter-panel.component.html",
+      "specPath": "src/app/features/nearby-food/components/filter-panel/filter-panel.component.spec.ts",
+      "selector": "app-filter-panel",
+      "className": "FilterPanelComponent",
+      "importedTypes": [
+        "CommonModule",
+        "MatFormFieldModule",
+        "MatSelectModule",
+        "MatInputModule",
+        "FormsModule",
+        "MatButtonToggleModule",
+        "MatIconModule",
+        "MatButtonModule"
+      ],
+      "isStandalone": true,
+      "isInlineTemplate": false,
+      "specStatus": "VERIFIED",
+      "detectedFeatures": {
+        "inputs": [],
+        "outputs": [
+          "filterChange"
+        ],
+        "models": [],
+        "templateBranches": 6,
+        "interactiveEvents": [
+          "click",
+          "keyup.enter",
+          "selectionChange",
+          "keyup",
+          "change"
+        ],
+        "reactiveForms": [],
+        "i18nKeys": [],
+        "rbacDirectives": [],
+        "rxJsSubscriptions": 0
+      },
+      "dimensionsVerified": {
+        "functionalAndEdgeCases": false,
+        "errorAndDegradedStates": false,
+        "rbac": true,
+        "a11y": false,
+        "i18n": true,
+        "memoryLeakUnsubscribe": true
+      },
+      "ambiguitiesOrSuspectedBugs": [],
+      "lastContentHash": "2fb8a7e451dd"
+    },
+    {
+      "key": "food-card",
+      "filePath": "src/app/features/nearby-food/components/food-card/food-card.component.ts",
+      "templatePath": "src/app/features/nearby-food/components/food-card/food-card.component.html",
+      "specPath": "src/app/features/nearby-food/components/food-card/food-card.component.spec.ts",
+      "selector": "app-food-card",
+      "className": "FoodCardComponent",
+      "importedTypes": [
+        "CommonModule",
+        "MatCardModule",
+        "MatIconModule",
+        "MatButtonModule"
+      ],
+      "isStandalone": true,
+      "isInlineTemplate": false,
+      "specStatus": "VERIFIED",
+      "detectedFeatures": {
+        "inputs": [
+          "place"
+        ],
+        "outputs": [
+          "select"
+        ],
+        "models": [],
+        "templateBranches": 12,
+        "interactiveEvents": [
+          "click",
+          "keyup.enter"
+        ],
+        "reactiveForms": [],
+        "i18nKeys": [],
+        "rbacDirectives": [],
+        "rxJsSubscriptions": 0
+      },
+      "dimensionsVerified": {
+        "functionalAndEdgeCases": false,
+        "errorAndDegradedStates": false,
+        "rbac": true,
+        "a11y": false,
+        "i18n": true,
+        "memoryLeakUnsubscribe": true
+      },
+      "ambiguitiesOrSuspectedBugs": [],
+      "lastContentHash": "3cda0ab6568c"
+    },
+    {
+      "key": "loading",
+      "filePath": "src/app/features/nearby-food/components/loading/loading.component.ts",
+      "templatePath": "src/app/features/nearby-food/components/loading/loading.component.html",
+      "specPath": "src/app/features/nearby-food/components/loading/loading.component.spec.ts",
+      "selector": "app-loading",
+      "className": "LoadingComponent",
+      "importedTypes": [
+        "CommonModule",
+        "MatProgressSpinnerModule",
+        "MatIconModule"
+      ],
+      "isStandalone": true,
+      "isInlineTemplate": false,
+      "specStatus": "VERIFIED",
+      "detectedFeatures": {
+        "inputs": [],
+        "outputs": [],
+        "models": [],
+        "templateBranches": 0,
+        "interactiveEvents": [],
+        "reactiveForms": [],
+        "i18nKeys": [],
+        "rbacDirectives": [],
+        "rxJsSubscriptions": 0
+      },
+      "dimensionsVerified": {
+        "functionalAndEdgeCases": false,
+        "errorAndDegradedStates": false,
+        "rbac": true,
+        "a11y": false,
+        "i18n": true,
+        "memoryLeakUnsubscribe": true
+      },
+      "ambiguitiesOrSuspectedBugs": [],
+      "lastContentHash": "693694ccb208"
+    },
+    {
+      "key": "map",
+      "filePath": "src/app/features/nearby-food/components/map/map.component.ts",
+      "templatePath": "src/app/features/nearby-food/components/map/map.component.html",
+      "specPath": "src/app/features/nearby-food/components/map/map.component.spec.ts",
+      "selector": "app-map",
+      "className": "MapComponent",
+      "importedTypes": [],
+      "isStandalone": true,
+      "isInlineTemplate": false,
+      "specStatus": "VERIFIED",
+      "detectedFeatures": {
+        "inputs": [
+          "currentLocation",
+          "places",
+          "selectedPlace",
+          "radius"
+        ],
+        "outputs": [
+          "select"
+        ],
+        "models": [],
+        "templateBranches": 0,
+        "interactiveEvents": [],
+        "reactiveForms": [],
+        "i18nKeys": [],
+        "rbacDirectives": [],
+        "rxJsSubscriptions": 0
+      },
+      "dimensionsVerified": {
+        "functionalAndEdgeCases": false,
+        "errorAndDegradedStates": false,
+        "rbac": true,
+        "a11y": false,
+        "i18n": true,
+        "memoryLeakUnsubscribe": true
+      },
+      "ambiguitiesOrSuspectedBugs": [],
+      "lastContentHash": "894c7e6ae1c3"
+    },
+    {
+      "key": "search-page",
+      "filePath": "src/app/features/nearby-food/pages/search-page/search-page.component.ts",
+      "templatePath": "src/app/features/nearby-food/pages/search-page/search-page.component.html",
+      "specPath": "src/app/features/nearby-food/pages/search-page/search-page.component.spec.ts",
+      "selector": "app-search-page",
+      "className": "SearchPageComponent",
+      "importedTypes": [
+        "CommonModule",
+        "MapComponent",
+        "FoodCardComponent",
+        "FilterPanelComponent",
+        "EmptyStateComponent",
+        "PandanBgComponent",
+        "LoginCardComponent",
+        "MeiYanBannerComponent",
+        "MatButtonModule",
+        "MatToolbarModule",
+        "MatIconModule",
+        "MatSnackBarModule",
+        "MatProgressSpinnerModule"
+      ],
+      "isStandalone": true,
+      "isInlineTemplate": false,
+      "specStatus": "VERIFIED",
+      "detectedFeatures": {
+        "inputs": [],
+        "outputs": [],
+        "models": [],
+        "templateBranches": 5,
+        "interactiveEvents": [
+          "loginSuccess",
+          "click",
+          "keyup.escape",
+          "retry",
+          "filterChange",
+          "select"
+        ],
+        "reactiveForms": [],
+        "i18nKeys": [],
+        "rbacDirectives": [],
+        "rxJsSubscriptions": 0
+      },
+      "dimensionsVerified": {
+        "functionalAndEdgeCases": false,
+        "errorAndDegradedStates": false,
+        "rbac": true,
+        "a11y": false,
+        "i18n": true,
+        "memoryLeakUnsubscribe": true
+      },
+      "ambiguitiesOrSuspectedBugs": [],
+      "lastContentHash": "426bd8d9044e"
+    }
+  ],
+  "impactedFeatureSlices": [
+    {
+      "key": "nearby-food",
+      "routePath": "/",
+      "allowedRoles": [
+        "admin",
+        "user"
+      ],
+      "components": [
+        "search-page",
+        "map",
+        "food-card",
+        "filter-panel",
+        "empty-state",
+        "login-card",
+        "mei-yan-banner",
+        "pandan-bg",
+        "loading"
+      ],
+      "services": [
+        "auth",
+        "cache",
+        "geolocation",
+        "places",
+        "food-filter"
+      ],
+      "mockFixtures": [],
+      "e2eSpecPath": "e2e/tests/nearby-food.e2e.spec.ts",
+      "manualChapterId": "nearby-food",
+      "manualOutputPaths": [
+        "docs/manual-artifacts/en-US/user/nearby-food/manual-steps.json",
+        "docs/manuals/en-US/user/USER_MANUAL.md"
+      ],
+      "status": "DOCUMENTED",
+      "dimensionsVerified": {
+        "happyPathJourney": true,
+        "errorResilience4xx5xx": true,
+        "rbacAccessMatrix": true,
+        "responsiveViewports": true,
+        "openApiContractSync": true,
+        "axeAccessibility": true,
+        "i18nLocales": true,
+        "performanceWebVitals": true
+      },
+      "params": [],
+      "paramOverrides": {}
+    }
+  ],
+  "impactedManualChapters": [
+    "nearby-food"
+  ],
+  "ciGateViolations": []
+}

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product User Manual (USER - en-US) | VeriScribe</title>
+  <style>
+    :root {
+      --primary: #277a62;
+      --primary-light: #e8f5f0;
+      --bg: #f8faf9;
+      --card-bg: #ffffff;
+      --text: #1a2321;
+      --text-muted: #596a66;
+      --border: #e2e8e5;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+    header.manual-hero {
+      background: linear-gradient(135deg, #1b5e4a 0%, #277a62 100%);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.15);
+    }
+    .hero-content { max-width: 900px; margin: 0 auto; }
+    .hero-content h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .hero-content p { opacity: 0.9; margin-top: 6px; font-size: 14px; }
+    .nav-container { max-width: 960px; margin: 24px auto 0; padding: 0 20px; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px 20px; }
+    .chapter-section { margin-bottom: 40px; }
+    .badges-row { display: flex; gap: 8px; margin: 12px 0 16px; flex-wrap: wrap; }
+    .chip { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 16px; }
+    .chip-role { background: #e0f2fe; color: #0369a1; }
+    .chip-route { background: #fef3c7; color: #b45309; }
+    .chip-locale { background: #f3e8ff; color: #6b21a8; }
+    .chapter-summary { font-size: 16px; color: var(--text-muted); }
+    .prereq-card {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .prereq-card h4 { font-size: 14px; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
+    .prereq-card ul { padding-left: 20px; font-size: 14px; }
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .step-badge {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 14px;
+      text-transform: uppercase;
+    }
+    .step-title { font-size: 19px; font-weight: 700; }
+    .step-details { display: grid; gap: 10px; margin-bottom: 20px; }
+    .detail-row { display: flex; gap: 14px; }
+    .detail-label { font-weight: 700; width: 85px; font-size: 13px; color: var(--text-muted); flex-shrink: 0; }
+    .detail-text { font-size: 14px; }
+    .detail-text.highlight { font-weight: 600; color: var(--primary); }
+    .tip-row { background: #fffbeb; padding: 8px 12px; border-radius: 6px; }
+    .screenshot-showcase {
+      margin-top: 16px;
+      background: #f1f5f3;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .device-switcher {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      background: #e2e8e5;
+      padding: 4px;
+      border-radius: 20px;
+    }
+    .switcher-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .switcher-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .img-wrapper img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .mobile-view .phone-frame {
+      max-width: 320px;
+      border: 10px solid #1e2925;
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .hidden { display: none; }
+    .trouble-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+    .trouble-table th, .trouble-table td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; }
+    .trouble-table th { background: #edf2ef; font-weight: 700; }
+    .chapter-divider { border: none; border-top: 2px dashed var(--border); margin: 40px 0; }
+    @media print {
+      header.manual-hero { position: static; padding: 20px; }
+      .device-switcher { display: none; }
+      .step-card { box-shadow: none; break-inside: avoid; border: 1px solid #ccc; }
+      body { background: #fff; }
+    }
+  </style>
+</head>
+<body>
+  <header class="manual-hero">
+    <div class="hero-content">
+      <h1>Verified Product User Manual</h1>
+      <p>Role: USER | Locale: en-US | Automatically compiled from Playwright Living Specifications</p>
+    </div>
+  </header>
+
+  <main class="container">
+    
+      <section class="chapter-section" id="chapter-nearby-food">
+        <div class="chapter-header">
+          <h2>Discovering Nearby Pandan Food & Bakeries</h2>
+          <div class="badges-row">
+            <span class="chip chip-role">user</span>
+            <span class="chip chip-route">Route: /</span>
+            <span class="chip chip-locale">en-US</span>
+          </div>
+          <p class="chapter-summary">Learn how to explore nearby Pandan chiffon cakes, kuih, and local bakeries with real-time distance and interactive map.</p>
+        </div>
+
+        
+        <div class="prereq-card">
+          <h4>Prerequisites</h4>
+          <ul>
+            <li>Browser location permission is granted.</li><li>Authenticated using preset access credentials.</li>
+          </ul>
+        </div>
+        
+
+        <div class="steps-flow">
+          
+        <div class="step-card" id="step-0-1">
+          <div class="step-header">
+            <span class="step-badge">Step 1</span>
+            <h3 class="step-title">Open Pandan Discovery Dashboard</h3>
+          </div>
+          <div class="step-details">
+            <div class="detail-row">
+              <span class="detail-label">Action</span>
+              <p class="detail-text">Launch the application in your browser. The system will detect your location and initialize the interactive food map.</p>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expected</span>
+              <p class="detail-text highlight">The hero header, 3D leaf backdrop, and interactive map container are displayed.</p>
+            </div>
+            
+            <div class="detail-row tip-row">
+              <span class="detail-label">💡 Tip</span>
+              <p class="detail-text">Ensure your device location services are turned on for accurate geodesic distance calculations.</p>
+            </div>
+          </div>
+
+          <div class="screenshot-showcase" data-step-id="0-1">
+            
+            <div class="device-switcher">
+              <button class="switcher-btn active" onclick="switchDevice('0-1', 'desktop')">💻 Desktop View</button>
+              <button class="switcher-btn" onclick="switchDevice('0-1', 'mobile')">📱 Mobile View</button>
+            </div>
+            
+            
+            <div class="img-wrapper desktop-view" id="view-desktop-0-1">
+              <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-01.png" alt="Open Pandan Discovery Dashboard Desktop" loading="lazy" />
+            </div>
+            
+            <div class="img-wrapper mobile-view hidden" id="view-mobile-0-1">
+              <div class="phone-frame">
+                <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-01-mobile.png" alt="Open Pandan Discovery Dashboard Mobile" loading="lazy" />
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      
+
+        <div class="step-card" id="step-0-2">
+          <div class="step-header">
+            <span class="step-badge">Step 2</span>
+            <h3 class="step-title">Explore Nearby Pandan Pins on Map</h3>
+          </div>
+          <div class="step-details">
+            <div class="detail-row">
+              <span class="detail-label">Action</span>
+              <p class="detail-text">Scan the interactive Google Map to view pins indicating verified Pandan culinary locations within walking distance.</p>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expected</span>
+              <p class="detail-text highlight">Map markers display rating badges (e.g. 4.8★) positioned at exact geodesic coordinates.</p>
+            </div>
+            
+            <div class="detail-row tip-row">
+              <span class="detail-label">💡 Tip</span>
+              <p class="detail-text">Each marker is filtered to exclude non-food businesses in townships named Pandan.</p>
+            </div>
+          </div>
+
+          <div class="screenshot-showcase" data-step-id="0-2">
+            
+            <div class="device-switcher">
+              <button class="switcher-btn active" onclick="switchDevice('0-2', 'desktop')">💻 Desktop View</button>
+              <button class="switcher-btn" onclick="switchDevice('0-2', 'mobile')">📱 Mobile View</button>
+            </div>
+            
+            
+            <div class="img-wrapper desktop-view" id="view-desktop-0-2">
+              <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-02.png" alt="Explore Nearby Pandan Pins on Map Desktop" loading="lazy" />
+            </div>
+            
+            <div class="img-wrapper mobile-view hidden" id="view-mobile-0-2">
+              <div class="phone-frame">
+                <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-02-mobile.png" alt="Explore Nearby Pandan Pins on Map Mobile" loading="lazy" />
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      
+
+        <div class="step-card" id="step-0-3">
+          <div class="step-header">
+            <span class="step-badge">Step 3</span>
+            <h3 class="step-title">Select a Spot for Detailed Information</h3>
+          </div>
+          <div class="step-details">
+            <div class="detail-row">
+              <span class="detail-label">Action</span>
+              <p class="detail-text">Click any green Pandan pin on the map to bring up the establishment card overlay.</p>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expected</span>
+              <p class="detail-text highlight">A floating card displays the food spot name, star rating, address, opening hours, and distance.</p>
+            </div>
+            
+          </div>
+
+          <div class="screenshot-showcase" data-step-id="0-3">
+            
+            <div class="device-switcher">
+              <button class="switcher-btn active" onclick="switchDevice('0-3', 'desktop')">💻 Desktop View</button>
+              <button class="switcher-btn" onclick="switchDevice('0-3', 'mobile')">📱 Mobile View</button>
+            </div>
+            
+            
+            <div class="img-wrapper desktop-view" id="view-desktop-0-3">
+              <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-03.png" alt="Select a Spot for Detailed Information Desktop" loading="lazy" />
+            </div>
+            
+            <div class="img-wrapper mobile-view hidden" id="view-mobile-0-3">
+              <div class="phone-frame">
+                <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-03-mobile.png" alt="Select a Spot for Detailed Information Mobile" loading="lazy" />
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      
+
+        <div class="step-card" id="step-0-4">
+          <div class="step-header">
+            <span class="step-badge">Step 4</span>
+            <h3 class="step-title">Review Spot Details & Opening Hours</h3>
+          </div>
+          <div class="step-details">
+            <div class="detail-row">
+              <span class="detail-label">Action</span>
+              <p class="detail-text">Inspect the specialty highlights, rating badge, address, and live open status.</p>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expected</span>
+              <p class="detail-text highlight">Detailed info confirms business name, photo preview, and open status.</p>
+            </div>
+            
+            <div class="detail-row tip-row">
+              <span class="detail-label">💡 Tip</span>
+              <p class="detail-text">The badge tags top-tier chiffon cakes, authentic kuih, and waffles.</p>
+            </div>
+          </div>
+
+          <div class="screenshot-showcase" data-step-id="0-4">
+            
+            <div class="device-switcher">
+              <button class="switcher-btn active" onclick="switchDevice('0-4', 'desktop')">💻 Desktop View</button>
+              <button class="switcher-btn" onclick="switchDevice('0-4', 'mobile')">📱 Mobile View</button>
+            </div>
+            
+            
+            <div class="img-wrapper desktop-view" id="view-desktop-0-4">
+              <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-04.png" alt="Review Spot Details & Opening Hours Desktop" loading="lazy" />
+            </div>
+            
+            <div class="img-wrapper mobile-view hidden" id="view-mobile-0-4">
+              <div class="phone-frame">
+                <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-04-mobile.png" alt="Review Spot Details & Opening Hours Mobile" loading="lazy" />
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      
+
+        <div class="step-card" id="step-0-5">
+          <div class="step-header">
+            <span class="step-badge">Step 5</span>
+            <h3 class="step-title">Filter by Distance Radius and Rating</h3>
+          </div>
+          <div class="step-details">
+            <div class="detail-row">
+              <span class="detail-label">Action</span>
+              <p class="detail-text">Use the filter panel to select maximum walking distance (e.g., 1km, 3km, 5km) or filter by minimum rating.</p>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expected</span>
+              <p class="detail-text highlight">The map dynamically adjusts pins matching the updated filter preferences.</p>
+            </div>
+            
+          </div>
+
+          <div class="screenshot-showcase" data-step-id="0-5">
+            
+            <div class="device-switcher">
+              <button class="switcher-btn active" onclick="switchDevice('0-5', 'desktop')">💻 Desktop View</button>
+              <button class="switcher-btn" onclick="switchDevice('0-5', 'mobile')">📱 Mobile View</button>
+            </div>
+            
+            
+            <div class="img-wrapper desktop-view" id="view-desktop-0-5">
+              <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-05.png" alt="Filter by Distance Radius and Rating Desktop" loading="lazy" />
+            </div>
+            
+            <div class="img-wrapper mobile-view hidden" id="view-mobile-0-5">
+              <div class="phone-frame">
+                <img src="../../../manual-artifacts/en-US/user/nearby-food/screenshots/step-05-mobile.png" alt="Filter by Distance Radius and Rating Mobile" loading="lazy" />
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      
+        </div>
+
+        
+      <div class="troubleshooting-section">
+        <h3>Troubleshooting & Common Scenarios</h3>
+        <table class="trouble-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Message Displayed</th>
+              <th>Resolution</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td><strong>No Pandan Spots Visible within 1km</strong></td>
+                <td><code>No authentic Pandan spots found nearby</code></td>
+                <td>Expand search radius to 3km or 5km using the filter panel, or click "Try Again" after granting location permission.</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    
+      </section>
+    
+  </main>
+
+  <script>
+    function switchDevice(stepId, device) {
+      const desktopView = document.getElementById('view-desktop-' + stepId);
+      const mobileView = document.getElementById('view-mobile-' + stepId);
+      const showcase = desktopView ? desktopView.parentElement : null;
+      if (!showcase) return;
+
+      const buttons = showcase.querySelectorAll('.switcher-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      if (device === 'desktop') {
+        if (desktopView) desktopView.classList.remove('hidden');
+        if (mobileView) mobileView.classList.add('hidden');
+        if (buttons[0]) buttons[0].classList.add('active');
+      } else {
+        if (desktopView) desktopView.classList.add('hidden');
+        if (mobileView) mobileView.classList.remove('hidden');
+        if (buttons[1]) buttons[1].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
